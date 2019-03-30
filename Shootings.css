@@ -1,0 +1,23 @@
+body
+{
+  color: #666666;
+  font-family: 'Verdana', sans-serif;
+  text-align: left;
+}
+
+h1 {
+    color: #666666;
+    text-align: center;
+}
+
+h2 {
+    color: #666666;
+    text-align: left;
+    background-color: #e0e1e2;
+}
+
+table {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #e0e1e2;
+}
