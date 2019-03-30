@@ -1,0 +1,792 @@
+---
+title: "US Mass Shootings 1982 to 2019"
+output: html_document
+css: "Shootings.css"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r import_data, include=FALSE}
+library(tidyverse)
+library(operators)
+library(plyr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+
+
+# Import the shootings data from the CSV file and save it as a data frame called imported_data
+imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
+
+# Create a copy of the data to change during cleansing, so that the original data is preserved
+cleansed_data <- imported_data
+```
+
+```{r cleanse_data, include=FALSE}
+# Update the gender column so that there is only one version of "Female" etc
+cleansed_data$gender = case_when(
+   cleansed_data$gender == "M" ~ "Male",
+   cleansed_data$gender == "Male" ~ "Male",
+   cleansed_data$gender == "F" ~ "Female",
+   cleansed_data$gender == "Female" ~ "Female",
+   cleansed_data$gender == "Male & Female" ~ "Male & Female"
+)
+
+# Update the race column so that there is only one version of Unknown, Black, White etc
+cleansed_data$race = case_when(
+   cleansed_data$race == "Other" ~ "Unknown",
+   cleansed_data$race == "-" ~ "Unknown",
+   cleansed_data$race == "unclear" ~ "Unknown",
+   cleansed_data$race == "" ~ "Unknown",
+   cleansed_data$race == "black" ~ "Black",
+   cleansed_data$race == "Black" ~ "Black",
+   cleansed_data$race == "Latino" ~ "Latino",
+   cleansed_data$race == "Native American" ~ "Native American",
+   cleansed_data$race == "white" ~ "White",
+   cleansed_data$race == "White" ~ "White",
+   cleansed_data$race == "White " ~ "White"
+)
+
+# For rows where race is NA, set it to Unknown
+cleansed_data[is.na(cleansed_data$race), "race"] <- "Unknown"
+
+
+# Update the "Weapons Obtained Legally" column so that there is only one version of "Yes" etc
+cleansed_data$weapons_obtained_legally = case_when(
+   cleansed_data$weapons_obtained_legally == "No" ~ "No",
+   cleansed_data$weapons_obtained_legally == "TBD" ~ "Unknown",
+   cleansed_data$weapons_obtained_legally == "-" ~ "Unknown",
+   cleansed_data$weapons_obtained_legally == "Unknown" ~ "Unknown",
+   cleansed_data$weapons_obtained_legally == "Kelley passed federal criminal background checks; the US Air Force failed to provide information on his criminal history to the FBI" ~ "Unknown",
+   cleansed_data$weapons_obtained_legally == "Yes" ~ "Yes",
+   cleansed_data$weapons_obtained_legally == "\nYes" ~ "Yes",
+   cleansed_data$weapons_obtained_legally == "Yes " ~ "Yes",
+   cleansed_data$weapons_obtained_legally %!in% c("Yes", "\nYes", "No", "Unknown", "-", "TBD") ~ "Unknown"
+)
+
+# Set weapons_obtained_legally to "Yes" for the Chattanooga military recruitment center shooting. The value in the imported data set contains quotes and I haven't figured out how to get the match condition to work with that value yet so this is a temporary workaround.
+cleansed_data[cleansed_data$case == "Chattanooga military recruitment center", "weapons_obtained_legally"] <- "Yes"
+
+# Create a new column containing the text after the comma in the location column
+cleansed_data$state <- sub('.*\\,', '', cleansed_data$location)
+
+# Strip leading white spaces from state
+cleansed_data$state <- sub("^\\s+", "", cleansed_data$state)
+
+# Replace state names with their codes e.g. California becomes CA
+cleansed_data$state <- ifelse(cleansed_data$state == "California", "CA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Pennsylvania", "PA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Florida", "FL", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Ohio", "OH", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Washington", "WA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Lousiana", "LA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Texas", "TX", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Kansas", "KS", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Michigan", "MI", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Colorado", "CO", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Oregon", "OR", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Tennessee", "TN", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "South Carolina", "SC", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Wisconsin", "WI", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "New York", "NY", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Connecticut", "CT", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Minnesota", "MN", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Georgia", "GA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Nevada", "NV", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Arizona", "AZ", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "North Carolina", "NC", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Kentucky", "KY", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Illinois", "IL", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Missouri", "MO", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Nebraska", "NE", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Virginia", "VA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Utah", "UT", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Mississippi", "MS", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Massachusetts", "MA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Hawaii", "HI", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Arkansas", "AR", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Iowa", "IA", cleansed_data$state)
+cleansed_data$state <- ifelse(cleansed_data$state == "Oklahoma", "OK", cleansed_data$state)
+
+# Strip leading white spaces from location.1 so that there's only one instance of "Workplace"
+cleansed_data$location.1 <- sub("^\\s+", "", cleansed_data$location.1)
+
+# Strip trailing white spaces from location.1 so that there's only one instance of "Other"
+cleansed_data$location.1 <- sub("\\s+$", "", cleansed_data$location.1)
+
+# Change "-", "TBD" and "Unclear" to "Unknown"
+cleansed_data$prior_signs_mental_health_issues = case_when(
+   cleansed_data$prior_signs_mental_health_issues == "-" ~ "Unknown",
+   cleansed_data$prior_signs_mental_health_issues == "No" ~ "No",
+   cleansed_data$prior_signs_mental_health_issues == "TBD" ~ "Unknown",
+   cleansed_data$prior_signs_mental_health_issues == "Unclear" ~ "Unknown",
+   cleansed_data$prior_signs_mental_health_issues == "Unknown" ~ "Unknown",
+   cleansed_data$prior_signs_mental_health_issues == "Yes" ~ "Yes"
+)
+```
+
+## US Mass Shootings Over Time
+
+
+```{r create_year_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per year
+shootings_per_year <- data.frame(table(cleansed_data$year))
+
+# Change the column heading names to "year" and "shootings"
+colnames(shootings_per_year) <- c("year", "shootings")
+```
+
+```{r display_plot_year, echo=FALSE, fig.height=5, fig.width=10}
+
+# Create a bar chart using ggplot2 to show shootings per year.
+plot_year <- ggplot(shootings_per_year, aes(y=shootings, x=year)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
+  labs(x = "year",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart showing shootings per year
+plot_year
+
+```
+
+The number of mass shootings in the US is **increasing**.  
+
+The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
+
+
+## US Mass Shootings By Gender
+
+```{r create_gender_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per gender
+shootings_per_gender <- data.frame(table(cleansed_data$gender))
+
+# Change the column heading names to "gender" and "shootings"
+colnames(shootings_per_gender) <- c("gender", "shootings")
+```
+
+```{r display_plot_gender, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings per gender
+plot_gender <- ggplot(shootings_per_gender, aes(y=shootings, x=gender)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e1ad46") +
+  labs(x = "gender",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart showing shootings per gender
+plot_gender
+```
+
+96% of mass shooters were **men**.
+
+## US Mass Shootings By Race
+
+```{r create_race_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per race
+shootings_per_race <- data.frame(table(cleansed_data$race))
+
+# Change the column heading names to "race" and "shootings"
+colnames(shootings_per_race) <- c("race", "shootings")
+```
+
+```{r display_plot_race, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings per race
+plot_race <- ggplot(shootings_per_race, aes(y=shootings, x=race)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e27f46") +
+  labs(x = "race",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart showing shootings per race
+plot_race
+
+```
+
+56% of mass shooters were **white**.
+
+## Were There Prior Signs of Mental Health Issues?
+
+```{r create_prior_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per race
+shootings_per_prior <- data.frame(table(cleansed_data$prior_signs_mental_health_issues))
+
+# Change the column heading names to "prior_signs_of_mental_health_issues" and "shootings"
+colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
+```
+
+```{r display_plot_prior, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by whether there were prior signs of mental healh issues
+plot_prior <- ggplot(shootings_per_prior, aes(y=shootings, x=prior_signs_of_MH_issues)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e14646") +
+  labs(x = "prior signs of mental health issues",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_prior
+
+```
+
+53% of mass shooters had **prior signs** of mental health issues.
+
+## Were Weapons Obtained Legally?
+
+```{r create_legally_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings based on whether the weapons were obtained legally or not
+shootings_per_legally <- data.frame(table(cleansed_data$weapons_obtained_legally))
+
+# Change the column heading names to "legally" and "shootings"
+colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
+```
+
+```{r display_plot_legally, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by whether weapons were obtained legally
+plot_legally <- ggplot(shootings_per_legally, aes(y=shootings, x=weapons_obtained_legally)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
+  labs(x = "wepons obtained legally",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_legally
+
+```
+
+72% of mass shooters obtained weapons **legally**.
+
+## US Mass Shootings By State
+
+```{r create_state_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by state
+shootings_per_state <- data.frame(table(cleansed_data$state))
+
+# Change the column heading names to "state" and "shootings"
+colnames(shootings_per_state) <- c("state", "shootings")
+```
+
+
+```{r display_plot_state, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by state
+plot_state <- ggplot(shootings_per_state, aes(y=shootings, x=state)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
+  labs(x = "state",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_state
+
+```
+
+**California** is the state that has had the most mass shootings.  
+
+17% of the mass shootings were in California.
+
+## State & Race
+
+```{r create_state_race_summary, include=FALSE}
+
+# Create new column containing 1 for each row, to use when showing number of shootings per grouping
+cleansed_data$for_count <- 1
+
+# Create a new data frame that shows number by state and race
+# shootings_per_state_race <- cleansed_data %>% group_by(state, race) %>% summarize(sum(for_count))
+
+shootings_per_state_race %>% dplyr::select(state, race, for_count) %>% group_by(state, race) %>% summarise(num_shootings = sum(for_count))
+
+
+# Change the column heading names to "state" and "shootings"
+colnames(shootings_per_state_race) <- c("State", "Race", "Shootings")
+```
+
+```{r display_plot_state_race, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by state and race
+plot_state_race <- ggplot() + 
+  geom_bar(aes(y=Shootings, x=State, fill=Race), data = shootings_per_state_race, stat = "identity")
+
+# Display the bar chart 
+plot_state_race
+
+```
+
+## US Mass Shootings By Location Type
+
+```{r create_loc_type_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by location type
+shootings_per_loc_type <- data.frame(table(cleansed_data$location.1))
+
+# Change the column heading names to "location.1" and "shootings"
+colnames(shootings_per_loc_type) <- c("location.1", "shootings")
+```
+
+```{r display_plot_loc_type, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by location type
+plot_loc_type <- ggplot(shootings_per_loc_type, aes(y=shootings, x=location.1)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e1ad46") +
+  labs(x = "location type",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_loc_type
+
+```
+Putting locations classed as "Other" to one side, as we don't know what types are included in that classification, the **workplace** is the most common location type for mass shootings (33%), with schools being the next most common (15%).
+
+## Age Of Shooter
+
+```{r create_age_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by age
+shootings_per_age <- data.frame(table(cleansed_data$age_of_shooter))
+
+# Change the column heading names to "age" and "shootings"
+colnames(shootings_per_age) <- c("age_of_shooter", "shootings")
+```
+
+```{r display_plot_age, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by age
+plot_age <- ggplot(shootings_per_age, aes(y=shootings, x=age_of_shooter)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e27f46") +
+  labs(x = "age",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_age
+
+```
+
+Shooter ages range from **11** to **66**.
+
+## Age Bracket Of Shooter
+
+```{r create_age_bracket_column, include=FALSE}
+
+# Create a new column called age_bracket and populate it with the age bracket of each shooter. Age brackets are: Child, Teen, 20s, 30s, 40s, 50s, 60s.
+
+cleansed_data$age_bracket <- case_when(
+    cleansed_data$age_of_shooter <= 12 ~ "1-12",
+    cleansed_data$age_of_shooter > 12 & cleansed_data$age_of_shooter < 20 ~ "13-19",
+    cleansed_data$age_of_shooter >= 20 & cleansed_data$age_of_shooter < 30 ~ "20s",
+    cleansed_data$age_of_shooter >= 30 & cleansed_data$age_of_shooter < 40 ~ "30s",
+    cleansed_data$age_of_shooter >= 40 & cleansed_data$age_of_shooter < 50 ~ "40s",
+    cleansed_data$age_of_shooter >= 50 & cleansed_data$age_of_shooter < 60 ~ "50s",
+    cleansed_data$age_of_shooter >= 60 & cleansed_data$age_of_shooter < 70 ~ "60s"
+)
+
+```
+
+```{r create_age_bracket_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by age bracket
+shootings_per_age_bracket <- data.frame(table(cleansed_data$age_bracket))
+
+# Change the column heading names to "age bracket" and "shootings"
+colnames(shootings_per_age_bracket) <- c("age_bracket", "shootings")
+```
+
+```{r display_plot_age_bracket, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by age bracket
+plot_age_bracket <- ggplot(shootings_per_age_bracket, aes(y=shootings, x=age_bracket)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e14646") +
+  labs(x = "age bracket",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_age_bracket
+
+```
+
+The age bracket with the highest number of mass shootings is the **20s** (34% of mass shootings).
+
+## Semi-Automatic Weapons
+
+```{r create_semi_auto_used_column, include=FALSE}
+
+# Create a new column called semi_auto_used and populate it with Yes or No depending on whether the shooter used a semi-automatic weapon
+
+cleansed_data$semi_auto_used <- "No"
+
+cleansed_data[grep("automatic", cleansed_data$weapon_type, ignore.case = TRUE), "semi_auto_used"] <- "Yes" 
+```
+
+```{r create_semi_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by whether semi automatic weapons were used
+shootings_per_semi <- data.frame(table(cleansed_data$semi_auto_used))
+
+# Change the column heading names to "semi automatic weapon used" and "shootings"
+colnames(shootings_per_semi) <- c("semi_auto_used", "shootings")
+```
+
+```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by whether a semi automatic weapon was used
+plot_semi <- ggplot(shootings_per_semi, aes(y=shootings, x=semi_auto_used)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
+  labs(x = "semi automatic weapon used",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_semi
+
+```
+
+65% of mass shootings involved **semi-automatic weapons**.
+
+## Multiple Weapons
+
+```{r create_multiple_weapons_used_column, include=FALSE}
+
+# Create a new column called multiple_weapons_used and populate it with Yes or No depending on whether the shooter used more than one weapon
+
+cleansed_data$multiple_weapons_used <- "No"
+
+cleansed_data[grep("Two", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep("Three", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep("Five", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes"
+
+cleansed_data[grep(" and ", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep(",", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep(";", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep("rifles", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+```
+
+```{r create_multiple_weapons_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by whether multiple weapons were used
+shootings_per_multiple <- data.frame(table(cleansed_data$multiple_weapons_used))
+
+# Change the column heading names to "multiple weapon used" and "shootings"
+colnames(shootings_per_multiple) <- c("multiple_weapons_used", "shootings")
+```
+
+```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by whether multiple weapons were used
+plot_multiple <- ggplot(shootings_per_multiple, aes(y=shootings, x=multiple_weapons_used)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
+  labs(x = "multiple weapons used",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_multiple
+
+
+```
+
+53% of mass shootings involved **multiple weapons**.
+
+## About This Data
+
+The dashboard is powered by data on US mass shootings 1982 - 2019 and has been provided by Mother Jones.  
+
+The download is available at:  
+
+https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/
+
+## Data Cleansing Changes - Gender
+
+The original breakdown of number of mass shootings by gender was:
+
+```{r cleanse_data_gender_before, echo=FALSE}
+
+# Create a data frame containing the unique list of genders in the original data, and the number of mass shootings by each
+unique_genders <- data.frame(table(imported_data$gender))
+
+# Change the column heading names to "Gender" and "Shootings"
+colnames(unique_genders) <- c("Gender", "Shootings")
+
+# Display the values for gender, and the total shootings for each, in the imported data in a table
+kable(unique_genders)
+```
+
+The cleansed breakdown is:  
+
+```{r cleanse_data_gender_after, echo=FALSE}
+
+# Create a data frame containing the unique list of genders in the cleansed data, and the number of mass shootings by each
+unique_genders <- data.frame(table(cleansed_data$gender))
+
+# Change the column heading names to "Gender" and "Shootings"
+colnames(unique_genders) <- c("Gender", "Shootings")
+
+# View the values for gender, and the total shootings for each, in the cleansed data:
+kable(unique_genders)
+```
+  
+
+## Data Cleansing Changes - Race
+
+The original breakdown of number of mass shootings by race was:
+
+```{r cleanse_data_race_before, echo=FALSE}
+
+# Create a data frame containing the unique list of race values in the original data, and the number of mass shootings by each
+unique_races <- data.frame(table(imported_data$race))
+
+# Change the column heading names to "Race" and "Shootings"
+colnames(unique_races) <- c("Race", "Shootings")
+
+# Display the values for race, and the total shootings for each, in the imported data:
+kable(unique_races)
+```
+
+The cleansed breakdown is:
+```{r cleanse_data_race_after, echo=FALSE}
+
+# Create a data frame containing the unique list of race values in the cleansed data, and the number of mass shootings by each
+unique_races <- data.frame(table(cleansed_data$race))
+
+# Change the column heading names to "Race" and "Shootings"
+colnames(unique_races) <- c("Race", "Shootings")
+
+# View the values for race, and the total shootings for each, in the cleansed data:
+kable(unique_races)
+```  
+
+## Data Cleansing Changes - Weapons Obtained Legally
+
+The original breakdown of number of mass shootings by "Weapons Obtained Legally" was:
+
+```{r cleanse_data_legally_before, echo=FALSE}
+
+# Create a data frame containing the unique list of weapons_obtained_legally values in the original data, and the number of mass shootings by each
+unique_legally <- data.frame(table(imported_data$weapons_obtained_legally))
+
+# Change the column heading names to "Weapons Obtained Legally" and "Shootings"
+colnames(unique_legally) <- c("Weapons Obtained Legally", "Shootings")
+
+# Display the values for "Weapons Obtained Legally", and the total shootings for each, in the imported data:
+kable(unique_legally)
+```
+
+The cleansed breakdown is:
+```{r cleanse_data_legally_after, echo=FALSE}
+
+# Create a data frame containing the unique list of weapons_obtained_legally values in the cleansed data, and the number of mass shootings by each
+unique_legally <- data.frame(table(cleansed_data$weapons_obtained_legally))
+
+# Change the column heading names to "Weapons Obtained Legally" and "Shootings"
+colnames(unique_legally) <- c("Weapons Obtained Legally", "Shootings")
+
+# View the values for "Weapons Obtained Legally", and the total shootings for each, in the cleansed data. Should have No 16, Unknown 15, Yes 79 Yes:
+kable(unique_legally)
+```
+  
+
+## Data Cleansing Changes - State
+
+A new column was added containing the state code e.g. CA for California.
+
+In the original data, the unique states after the comma in the location column were:
+
+```{r cleanse_data_state_before, echo=FALSE}
+
+# Create a data frame containing unique states in the imported data (by extracting the text after the comma in the location column) and the number of mass shootings for each:
+unique_state <- data.frame(table(sub('.*\\,', '', cleansed_data$location)))
+
+# Change the column heading names to "State" and "Shootings"
+colnames(unique_state) <- c("State", "Shootings")
+
+# Display them
+kable(unique_state)
+```
+
+After cleansing, the unique states are:
+
+```{r cleanse_data_state_after, echo=FALSE}
+
+# Create a data frame containing unique states in the cleansed data and the number of mass shootings for each:
+unique_state <- data.frame(table(cleansed_data$state))
+
+# Change the column heading names to "State" and "Shootings"
+colnames(unique_state) <- c("State", "Shootings")
+
+# Display the new unique list of states
+kable(unique_state)
+
+```  
+
+## Data Cleansing Changes - Location Type
+
+The location types were:
+
+```{r cleanse_data_loc_type_before, echo=FALSE}
+
+# Create a data frame containing unique location types in the imported data and the number of mass shootings for each
+unique_loc_type <- data.frame(table(imported_data$location.1))
+
+# Change the column heading names to "Location Type" and "Shootings"
+colnames(unique_loc_type) <- c("Location Type", "Shootings")
+
+# Display the number of shootings per location type as per the values of location type in the imported data
+kable(unique_loc_type)
+
+```
+
+There were 2 instances of "Workplace"" as one had a leading white space.
+
+There were also 2 instaces of "Other"" as one with a trailing white space.
+
+The cleansed types are:
+
+```{r cleanse_data_loc_type_after, echo=FALSE}
+
+# Create a data frame containing unique location types in the cleansed data and the number of mass shootings for each:
+unique_loc_type <- data.frame(table(cleansed_data$location.1))
+
+# Change the column heading names to "Location Type" and "Shootings"
+colnames(unique_loc_type) <- c("Location Type", "Shootings")
+
+# Display the new unique list of states
+kable(unique_loc_type)
+```  
+
+## Data Cleansing Changes - Prior Signs Of Mental Health Issues
+
+The values in the imported data were:
+
+```{r cleanse_data_prior_before, echo=FALSE}
+
+# Create a data frame containing values for prior_signs_mental_health_issues in the imported data and the number of mass shootings for each
+unique_prior <- data.frame(table(imported_data$prior_signs_mental_health_issues))
+
+# Change the column heading names to "Prior Signs Of Mental health Issues" and "Shootings"
+colnames(unique_prior) <- c("Prior Signs Of Mental Health Issues", "Shootings")
+
+# Display the number of shootings per value for prior_signs_mental_health_issues 
+kable(unique_prior)
+
+```
+
+The values are now:
+
+```{r cleanse_data_prior_after, echo=FALSE}
+
+# Create a data frame containing unique values for prior_signs_mental_health_issues in the cleansed data and the number of mass shootings for each
+unique_prior <- data.frame(table(cleansed_data$prior_signs_mental_health_issues))
+
+# Change the column heading names to "Prior Signs Of Mental Health Issues" and "Shootings"
+colnames(unique_prior) <- c("Prior Signs Of Mental Health Issues", "Shootings")
+
+# Display the table of number of shootings per value for prior_signs_mental_health_issues
+kable(unique_prior)
+
+```  
+
