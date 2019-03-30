@@ -353,7 +353,7 @@ cleansed_data$for_count <- 1
 # Create a new data frame that shows number by state and race
 # shootings_per_state_race <- cleansed_data %>% group_by(state, race) %>% summarize(sum(for_count))
 
-shootings_per_state_race %>% dplyr::select(state, race, for_count) %>% group_by(state, race) %>% summarise(num_shootings = sum(for_count))
+shootings_per_state_race <- cleansed_data %>% dplyr::select(state, race, for_count) %>% group_by(state, race) %>% summarise(num_shootings = sum(for_count))
 
 
 # Change the column heading names to "state" and "shootings"
