@@ -1465,6 +1465,38 @@ plot_loc_type_race
 
 ```
 
+## Age Bracket & Race
+
+```{r create_age_race_summary, include=FALSE}
+# Create a new data frame that shows number by age bracket and race
+shootings_per_age_race <- aggregate(cleansed_data$for_count, by=list(cleansed_data$age_bracket, cleansed_data$race),FUN = sum)
+
+# Change the column heading names to Age_Bracket, Race and Num_Shootings
+colnames(shootings_per_age_race) <- c("Age_Bracket", "Race", "Num_Shootings")
+```
+
+```{r display_plot_age_race, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by age bracket and race
+ plot_age_race <- ggplot() + 
+  geom_bar(aes(y=Num_Shootings, x=Age_Bracket, fill=Race), data = shootings_per_age_race, stat = "identity") +
+  scale_fill_manual(values = c("#49a4aa", "#46b7e1", "#e14646", "#e27f46", "#e1ad46", "#666666", "#e0e1e2")) +
+  labs(x = "Age Bracket",
+       y = "Number of mass shootings") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_age_race
+
+```
+
 ## About This Data
 
 The dashboard is powered by data on US mass shootings 1982 - 2019 and has been provided by Mother Jones.  
