@@ -14,6 +14,8 @@ library(operators)
 library(magrittr)
 library(dplyr)
 library(knitr)
+library(sf)
+library(usmap)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -127,6 +129,77 @@ cleansed_data$prior_signs_mental_health_issues = case_when(
    cleansed_data$prior_signs_mental_health_issues == "Unknown" ~ "Unknown",
    cleansed_data$prior_signs_mental_health_issues == "Yes" ~ "Yes"
 )
+```
+
+## US Mass Shootings By State
+
+```{r create_state_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by state
+shootings_per_state <- data.frame(table(cleansed_data$state))
+
+# Change the column heading names to "state" and "shootings"
+colnames(shootings_per_state) <- c("state", "shootings")
+
+```
+
+
+```{r display_plot_state, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by state
+plot_state_bar <- ggplot(shootings_per_state, aes(y=shootings, x=state)) + 
+  geom_bar(position="dodge", stat="identity", fill = "#e14646") +
+  labs(x = "state",
+       y = "number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.ticks = element_blank(),
+    title = element_text(colour = "#666666"),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666")) 
+
+# Display the bar chart 
+plot_state_bar
+
+# Create a chart showing the states on a map of the US and shade the states by the number of shootings
+plot_state_map_shootings <- plot_usmap(data = shootings_per_state, values = "shootings", regions = "states", labels = TRUE) +
+  scale_fill_continuous(low = "white", high = "#e14646", name = "shootings") +
+  theme(legend.position = "right")
+
+# Display the map chart
+plot_state_map_shootings
+```
+
+**California** is the state that has had the most mass shootings.  
+
+17% of the mass shootings were in California.
+
+## US Mass Shooting Victims By State
+
+```{r create_state_victims_summary, include=FALSE}
+
+# Create a new data frame that shows number of victims by state
+victims_by_state <- aggregate(cleansed_data$total_victims, by=list(cleansed_data$state), FUN = sum)
+
+# Change the column heading names to "state" and "victims"
+colnames(victims_by_state) <- c("state", "victims")
+
+```
+
+
+```{r display_plot_state_victims, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a chart showing the states on a map of the US and shade the states by the number of victims
+plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE) +
+  scale_fill_continuous(low = "white", high = "#46b7e1", name = "victims") +
+  theme(legend.position = "right")
+
+# Display the map chart
+plot_state_map_victims
+
 ```
 
 ## US Mass Shootings Over Time
@@ -306,44 +379,6 @@ plot_legally
 ```
 
 72% of mass shooters obtained weapons **legally**.
-
-## US Mass Shootings By State
-
-```{r create_state_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings by state
-shootings_per_state <- data.frame(table(cleansed_data$state))
-
-# Change the column heading names to "state" and "shootings"
-colnames(shootings_per_state) <- c("state", "shootings")
-```
-
-
-```{r display_plot_state, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by state
-plot_state <- ggplot(shootings_per_state, aes(y=shootings, x=state)) + 
-  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
-  labs(x = "state",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
-
-# Display the bar chart 
-plot_state
-
-```
-
-**California** is the state that has had the most mass shootings.  
-
-17% of the mass shootings were in California.
 
 ## US Mass Shootings By Location Type
 
