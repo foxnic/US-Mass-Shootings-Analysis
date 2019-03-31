@@ -521,25 +521,22 @@ shootings_per_semi <- data.frame(table(cleansed_data$semi_auto_used))
 colnames(shootings_per_semi) <- c("semi_auto_used", "shootings")
 ```
 
-```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=2}
 
-# Create a bar chart using ggplot2 to show shootings by whether a semi automatic weapon was used
-plot_semi <- ggplot(shootings_per_semi, aes(y=shootings, x=semi_auto_used)) + 
-  geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
-  labs(x = "semi automatic weapon used",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+# Create a single stacked bar
+plot_semi_single_bar <- ggplot(shootings_per_semi, aes(fill=semi_auto_used, y=shootings, x=1)) + 
+    geom_bar( stat="identity") +
+  coord_flip() +
   theme(
+    axis.text.x = element_blank(),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
     axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
+    title = element_text(colour = "white"),
     plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
+    panel.background = element_blank())
 
-# Display the bar chart 
-plot_semi
+# Display the single stacked bar
+plot_semi_single_bar
 
 ```
 
