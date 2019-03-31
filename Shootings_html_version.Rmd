@@ -574,26 +574,22 @@ shootings_per_multiple <- data.frame(table(cleansed_data$multiple_weapons_used))
 colnames(shootings_per_multiple) <- c("multiple_weapons_used", "shootings")
 ```
 
-```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
 
-# Create a bar chart using ggplot2 to show shootings by whether multiple weapons were used
-plot_multiple <- ggplot(shootings_per_multiple, aes(y=shootings, x=multiple_weapons_used)) + 
-  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
-  labs(x = "multiple weapons used",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+# Create a single stacked bar
+plot_multi_single_bar <- ggplot(shootings_per_multiple, aes(fill=multiple_weapons_used, y=shootings, x=1)) + 
+    geom_bar( stat="identity") +
+  coord_flip() +
   theme(
+    axis.text.x = element_blank(),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
     axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
+    title = element_text(colour = "white"),
     plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
+    panel.background = element_blank())
 
-# Display the bar chart 
-plot_multiple
-
+# Display the single stacked bar
+plot_multi_single_bar
 
 ```
 
