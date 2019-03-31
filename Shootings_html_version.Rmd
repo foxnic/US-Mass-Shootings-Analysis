@@ -290,11 +290,11 @@ colnames(shootings_per_race) <- c("race", "shootings")
 ```{r display_plot_race, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bar chart using ggplot2 to show shootings per race
-plot_race <- ggplot(shootings_per_race, aes(y=shootings, x=race)) + 
+plot_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -shootings))) + 
   geom_bar(position="dodge", stat="identity", fill = "#e27f46") +
   labs(x = "race",
        y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
@@ -325,11 +325,11 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 ```{r display_plot_prior, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bar chart using ggplot2 to show shootings by whether there were prior signs of mental healh issues
-plot_prior <- ggplot(shootings_per_prior, aes(y=shootings, x=prior_signs_of_MH_issues)) + 
+plot_prior <- ggplot(shootings_per_prior, aes(y=shootings, x=reorder(prior_signs_of_MH_issues, -shootings))) + 
   geom_bar(position="dodge", stat="identity", fill = "#e14646") +
   labs(x = "prior signs of mental health issues",
        y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
@@ -360,11 +360,11 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 ```{r display_plot_legally, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bar chart using ggplot2 to show shootings by whether weapons were obtained legally
-plot_legally <- ggplot(shootings_per_legally, aes(y=shootings, x=weapons_obtained_legally)) + 
+plot_legally <- ggplot(shootings_per_legally, aes(y=shootings, x=reorder(weapons_obtained_legally, -shootings))) + 
   geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
   labs(x = "wepons obtained legally",
        y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
@@ -395,11 +395,11 @@ colnames(shootings_per_loc_type) <- c("location.1", "shootings")
 ```{r display_plot_loc_type, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bar chart using ggplot2 to show shootings by location type
-plot_loc_type <- ggplot(shootings_per_loc_type, aes(y=shootings, x=location.1)) + 
+plot_loc_type <- ggplot(shootings_per_loc_type, aes(y=shootings, x=reorder(location.1, -shootings))) + 
   geom_bar(position="dodge", stat="identity", fill = "#e1ad46") +
   labs(x = "location type",
        y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
