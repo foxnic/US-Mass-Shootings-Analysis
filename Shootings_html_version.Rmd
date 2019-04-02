@@ -219,23 +219,25 @@ colnames(shootings_per_year) <- c("year", "shootings")
 
 ```{r display_plot_year, echo=FALSE, fig.height=5, fig.width=10}
 
-# Create a bar chart using ggplot2 to show shootings per year.
-plot_year <- ggplot(shootings_per_year, aes(y=shootings, x=year)) + 
-  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
-  labs(x = "year",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666", fontface = "bold") +
+# Create a line graph showing the number of mass shootings per year
+my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1)) +
+  geom_line(color="#49a4aa", size = 1)+
+  geom_point(color="#49a4aa")+
+  labs(x = "Year",
+       y = "Number of mass shootings")+
+  geom_text(aes(label=shootings), vjust = -1, size = 3, col = "#666666", fontface = "bold")+
   theme(
-    axis.text.y = element_blank(),
+    axis.text.y = element_text(colour = "#666666", size = 7.5),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
     axis.ticks = element_blank(),
     title = element_text(colour = "#666666"),
     plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
+    axis.line.x = element_line(colour = "#666666"),
+    axis.line.y = element_line(colour = "#666666"))+
+    geom_smooth(method = "loess", colour = "#666666", linetype = 2, size = 0.5 )
 
-# Display the bar chart showing shootings per year
-plot_year
+# Display the line plot
+my_line_plot
 
 ```
 
