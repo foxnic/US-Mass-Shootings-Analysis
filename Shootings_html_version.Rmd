@@ -890,24 +890,14 @@ colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
 
 ```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by year and age bracket
- plot_year_age <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=Year, fill=Age_Bracket), data = shootings_per_year_age, stat = "identity") +
-  scale_fill_manual(values = c("#49a4aa", "#46b7e1", "#e14646", "#e27f46", "#e1ad46", "#666666", "#e0e1e2")) +
-  labs(x = "Year",
-       y = "Number of mass shootings") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
+# Create a faceted line graph showing the number of mass shootings per year for each age bracket
+faceted_line_graph_year_age <- ggplot(data=shootings_per_year_age, aes(x=Year, y = Num_Shootings, colour = Age_Bracket)) + 
+  geom_line() + 
+  facet_wrap(~Age_Bracket)
 
-# Display the bar chart 
-plot_year_age
-
+# Display the faceted line graph
+faceted_line_graph_year_age 
+  
 ```
 
 ## Year & Prior Signs of Mental Health Issues
