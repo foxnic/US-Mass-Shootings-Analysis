@@ -16,6 +16,7 @@ library(dplyr)
 library(knitr)
 library(sf)
 library(usmap)
+library(waffle)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -129,6 +130,7 @@ cleansed_data$prior_signs_mental_health_issues = case_when(
    cleansed_data$prior_signs_mental_health_issues == "Unknown" ~ "Unknown",
    cleansed_data$prior_signs_mental_health_issues == "Yes" ~ "Yes"
 )
+
 ```
 
 ## US Mass Shootings By State
@@ -519,24 +521,18 @@ shootings_per_semi <- data.frame(table(cleansed_data$semi_auto_used))
 
 # Change the column heading names to "semi automatic weapon used" and "shootings"
 colnames(shootings_per_semi) <- c("semi_auto_used", "shootings")
+
+# Add a Percentage column containing the % of shootings for each category (yes, no)
+shootings_per_semi$percentage <- round(shootings_per_semi$shootings / sum(shootings_per_semi$shootings) * 100, 0)
 ```
 
 ```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=2}
 
-# Create a single stacked bar
-plot_semi_single_bar <- ggplot(shootings_per_semi, aes(fill=semi_auto_used, y=shootings, x=1)) + 
-    geom_bar( stat="identity") +
-  coord_flip() +
-  theme(
-    axis.text.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "white"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank())
+# Create a waffle chart
+semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= "#49a4aa", 'No'="#e14646"))
 
-# Display the single stacked bar
-plot_semi_single_bar
+# Display the waffle chart
+semi_auto_waffle
 
 ```
 
@@ -572,25 +568,19 @@ shootings_per_multiple <- data.frame(table(cleansed_data$multiple_weapons_used))
 
 # Change the column heading names to "multiple weapon used" and "shootings"
 colnames(shootings_per_multiple) <- c("multiple_weapons_used", "shootings")
+
+# Add a Percentage column containing the % of shootings for each category (yes, no)
+shootings_per_multiple$percentage <- round(shootings_per_multiple$shootings / sum(shootings_per_multiple$shootings) * 100, 0)
+
 ```
 
 ```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
 
-# Create a single stacked bar
-plot_multi_single_bar <- ggplot(shootings_per_multiple, aes(fill=multiple_weapons_used, y=shootings, x=1)) + 
-    geom_bar( stat="identity") +
-  coord_flip() +
-  theme(
-    axis.text.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "white"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank())
+# Create a waffle chart
+multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= "#49a4aa", 'No'="#e14646"))
 
-# Display the single stacked bar
-plot_multi_single_bar
-
+# Display the waffle chart
+multiple_weapons_waffle
 ```
 
 53% of mass shootings involved **multiple weapons**.
