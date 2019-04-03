@@ -891,9 +891,12 @@ colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
 ```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a faceted line graph showing the number of mass shootings per year for each age bracket
-faceted_line_graph_year_age <- ggplot(data=shootings_per_year_age, aes(x=Year, y = Num_Shootings, colour = Age_Bracket)) + 
-  geom_line() + 
+faceted_line_graph_year_age <- ggplot(data=shootings_per_year_age, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
+  geom_line()+
+  geom_point()+
+  geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
   facet_wrap(~Age_Bracket)
+
 
 # Display the faceted line graph
 faceted_line_graph_year_age 
