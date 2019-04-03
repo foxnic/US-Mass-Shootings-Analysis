@@ -587,6 +587,31 @@ multiple_weapons_waffle
 
 53% of mass shootings involved **multiple weapons**.
 
+## Year & Age Bracket
+
+```{r create_year_age_summary, include=FALSE}
+# Create a new data frame that shows number by year and age bracket
+shootings_per_year_age <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$age_bracket),FUN = sum)
+
+# Change the column heading names to Year, Age_Bracket and Num_Shootings
+colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
+```
+
+```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a faceted line graph showing the number of mass shootings per year for each age bracket
+faceted_line_graph_year_age <- ggplot(data=shootings_per_year_age, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
+  geom_line()+
+  geom_point()+
+  geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
+  facet_wrap(~Age_Bracket)
+
+
+# Display the faceted line graph
+faceted_line_graph_year_age 
+  
+```
+
 
 ## State & Race
 
@@ -878,30 +903,6 @@ plot_year_multi
 
 ```
 
-## Year & Age Bracket
-
-```{r create_year_age_summary, include=FALSE}
-# Create a new data frame that shows number by year and age bracket
-shootings_per_year_age <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$age_bracket),FUN = sum)
-
-# Change the column heading names to Year, Age_Bracket and Num_Shootings
-colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
-```
-
-```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a faceted line graph showing the number of mass shootings per year for each age bracket
-faceted_line_graph_year_age <- ggplot(data=shootings_per_year_age, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
-  geom_line()+
-  geom_point()+
-  geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
-  facet_wrap(~Age_Bracket)
-
-
-# Display the faceted line graph
-faceted_line_graph_year_age 
-  
-```
 
 ## Year & Prior Signs of Mental Health Issues
 
