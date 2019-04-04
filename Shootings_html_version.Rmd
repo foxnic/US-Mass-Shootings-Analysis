@@ -598,9 +598,10 @@ colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
 ```
 
 ```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
+without_child_age_bracket <- shootings_per_year_age[shootings_per_year_age$Age_Bracket != "1-12", ]
 
 # Create a faceted line graph showing the number of mass shootings per year for each age bracket
-faceted_line_graph_year_age <- ggplot(data=shootings_per_year_age, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
+faceted_line_graph_year_age <- ggplot(data=without_child_age_bracket, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
   geom_line()+
   geom_point()+
   geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
@@ -612,6 +613,7 @@ faceted_line_graph_year_age
   
 ```
 
+The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.
 
 ## State & Race
 
