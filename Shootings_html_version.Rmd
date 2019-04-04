@@ -257,28 +257,9 @@ shootings_per_gender <- data.frame(table(cleansed_data$gender))
 colnames(shootings_per_gender) <- c("gender", "shootings")
 ```
 
-```{r display_plot_gender, echo=FALSE, fig.width=10, fig.height=5}
+### 96%
 
-# Create a bar chart using ggplot2 to show shootings per gender
-plot_gender <- ggplot(shootings_per_gender, aes(y=shootings, x=reorder(gender, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e1ad46") +
-  labs(x = "gender",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 4, col = "#666666") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
-
-# Display the bar chart showing shootings per gender
-plot_gender
-```
-
-96% of mass shooters were **men**.
+of mass shooters were **men**.
 
 ## US Mass Shootings By Race
 
