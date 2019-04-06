@@ -18,7 +18,13 @@ h2 {
 
 h3 {
     color: #e1ad46;
-    font-size: 90px;
+    font-size: 190px;
+    text-align: left;
+}
+
+h5 {
+    color: #b2b0b0;
+    font-size: 30px;
     text-align: left;
 }
 

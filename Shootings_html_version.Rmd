@@ -259,7 +259,7 @@ colnames(shootings_per_gender) <- c("gender", "shootings")
 
 ### 96%
 
-of mass shooters were **men**.
+##### of mass shooters were **men**
 
 ## US Mass Shootings By Race
 
