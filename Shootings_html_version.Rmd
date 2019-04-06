@@ -274,7 +274,8 @@ plot_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -shooti
   geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
   theme(
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.title = element_blank(),
     axis.ticks = element_blank(),
     #title = element_text(colour = "#666666"),
     #plot.title = element_text(hjust = 0.5),
