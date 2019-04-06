@@ -1,6 +1,11 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
-output: html_document
+output: 
+  html_document:
+    toc: true # table of content true
+    toc_depth: 2  # upto three depths of headings (specified by #, ## and ###)
+    toc_float: true # table of contents is always visible, to the left of the document
+    #theme: united  # many options for theme, this one is my favorite.
 css: "Shootings.css"
 ---
 
