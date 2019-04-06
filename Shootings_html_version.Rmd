@@ -261,7 +261,7 @@ my_line_plot
 
 ```
 
-The number of mass shootings in the US is **increasing**.  
+The number of mass shootings per year in the US is **increasing**.  
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
@@ -357,24 +357,14 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 
 ```{r display_plot_legally, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by whether weapons were obtained legally
-plot_legally <- ggplot(shootings_per_legally, aes(y=shootings, x=reorder(weapons_obtained_legally, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
-  labs(x = "wepons obtained legally",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 22),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
-    axis.title.x = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) +
-    coord_cartesian(ylim=c(0,90))
+# Create a treemap chart for shootings involving legal and illegal weapons
+treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
+  geom_treemap(aes(alpha = shootings), fill = "#49a4aa") +
+  geom_treemap_text(colour = "white", place = "centre",
+                    grow = TRUE)
 
-# Display the bar chart 
-plot_legally
+# Display the treemap chart 
+treemap_legally_shootings
 
 ```
 
