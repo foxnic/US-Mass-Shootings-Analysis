@@ -239,20 +239,22 @@ colnames(shootings_per_year) <- c("year", "shootings")
 
 # Create a line graph showing the number of mass shootings per year
 my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1)) +
-  geom_line(color="#e27f46", size = 1)+
+  geom_line(color="#e27f46", size = 2)+
   geom_point(color="#e27f46")+
   labs(x = "Year",
        y = "Number of mass shootings")+
-  geom_text(aes(label=shootings), vjust = -1, size = 3, col = "#666666", fontface = "bold")+
+  geom_text(data=subset(shootings_per_year, year == "1984" | year == "1989"  | year == "1991"| year == "1993" | year == "1999" | year == "2012" | year == "2017" | year == "2018"), aes(label=shootings), vjust = -1, size = 6, col = "#666666", fontface = "bold")+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 7.5),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 16, angle = 90, vjust = 0.5),
     axis.ticks = element_blank(),
+    axis.title = element_text(colour = "#666666", size = 22),
     title = element_text(colour = "#666666"),
     plot.title = element_text(hjust = 0.5),
     axis.line.x = element_line(colour = "#666666"),
     axis.line.y = element_line(colour = "#666666"))+
-    geom_smooth(method = "loess", colour = "#666666", linetype = 2, size = 0.5 )
+    geom_smooth(method = "loess", colour = "#666666", linetype = 2, size = 0.5 )+
+    coord_cartesian(ylim=c(0,15))
 
 # Display the line plot
 my_line_plot
@@ -509,6 +511,35 @@ plot_age_bracket
 
 A **third** of mass shooters were in their **20s** (34% of mass shootings).
 
+## Year & Age Bracket
+
+```{r create_year_age_summary, include=FALSE}
+# Create a new data frame that shows number by year and age bracket
+shootings_per_year_age <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$age_bracket),FUN = sum)
+
+# Change the column heading names to Year, Age_Bracket and Num_Shootings
+colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
+```
+
+```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
+without_child_age_bracket <- shootings_per_year_age[shootings_per_year_age$Age_Bracket != "1-12", ]
+
+# Create a faceted line graph showing the number of mass shootings per year for each age bracket
+faceted_line_graph_year_age <- ggplot(data=without_child_age_bracket, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
+  geom_line()+
+  geom_point()+
+  geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
+  facet_wrap(~Age_Bracket)
+
+# Display the faceted line graph
+faceted_line_graph_year_age 
+  
+```
+
+There is a noticeable increase in recent years in the number of mass shooters in their twenties.
+
+Note: The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.
+
 ## Semi-Automatic Weapons
 
 ```{r create_semi_auto_used_column, include=FALSE}
@@ -590,36 +621,6 @@ multiple_weapons_waffle
 ```
 
 Just **over half** (53%) of mass shootings involved **multiple weapons**.
-
-## Year & Age Bracket
-
-```{r create_year_age_summary, include=FALSE}
-# Create a new data frame that shows number by year and age bracket
-shootings_per_year_age <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$age_bracket),FUN = sum)
-
-# Change the column heading names to Year, Age_Bracket and Num_Shootings
-colnames(shootings_per_year_age) <- c("Year", "Age_Bracket", "Num_Shootings")
-```
-
-```{r display_plot_year_age, echo=FALSE, fig.width=10, fig.height=5}
-without_child_age_bracket <- shootings_per_year_age[shootings_per_year_age$Age_Bracket != "1-12", ]
-
-# Create a faceted line graph showing the number of mass shootings per year for each age bracket
-faceted_line_graph_year_age <- ggplot(data=without_child_age_bracket, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
-  geom_line()+
-  geom_point()+
-  geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
-  facet_wrap(~Age_Bracket)
-
-
-# Display the faceted line graph
-faceted_line_graph_year_age 
-  
-```
-
-There is a sharp increase in the number of mass shooters in their twenties.
-
-Note: The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.
 
 ## State & Race
 
