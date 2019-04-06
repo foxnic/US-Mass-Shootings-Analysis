@@ -139,6 +139,33 @@ cleansed_data$prior_signs_mental_health_issues = case_when(
 
 ```
 
+## US Mass Shooting Victims By State
+
+```{r create_state_victims_summary, include=FALSE}
+
+# Create a new data frame that shows number of victims by state
+victims_by_state <- aggregate(cleansed_data$total_victims, by=list(cleansed_data$state), FUN = sum)
+
+# Change the column heading names to "state" and "victims"
+colnames(victims_by_state) <- c("state", "victims")
+
+```
+
+
+```{r display_plot_state_victims, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a chart showing the states on a map of the US and shade the states by the number of victims
+plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE) +
+  scale_fill_continuous(low = "white", high = "#46b7e1", name = "victims") +
+  theme(legend.position = "right")
+
+# Display the map chart
+plot_state_map_victims
+
+```
+
+**Nevada** has had the most victims from mass shootings, due to the 2017 Las Vegas Strip massacre in which there were **604** victims - 546 injured, and 58 killed. 
+
 ## US Mass Shootings By State
 
 ```{r create_state_summary, include=FALSE}
@@ -165,34 +192,10 @@ treemap_state_shootings
 
 ```
 
-**California** is the state that has had the most mass shootings.  
+**California** has had the most mass shootings.  
 
 **19** (17%) of the mass shootings were in California.
 
-## US Mass Shooting Victims By State
-
-```{r create_state_victims_summary, include=FALSE}
-
-# Create a new data frame that shows number of victims by state
-victims_by_state <- aggregate(cleansed_data$total_victims, by=list(cleansed_data$state), FUN = sum)
-
-# Change the column heading names to "state" and "victims"
-colnames(victims_by_state) <- c("state", "victims")
-
-```
-
-
-```{r display_plot_state_victims, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a chart showing the states on a map of the US and shade the states by the number of victims
-plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE) +
-  scale_fill_continuous(low = "white", high = "#46b7e1", name = "victims") +
-  theme(legend.position = "right")
-
-# Display the map chart
-plot_state_map_victims
-
-```
 
 ## US Mass Shootings Over Time
 
