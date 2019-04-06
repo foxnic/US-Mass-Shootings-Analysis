@@ -395,7 +395,7 @@ plot_loc_type
 ```
  
 
-Putting locations classed as "Other" to one side, as we don't know what types are included in that classification, the **workplace** is the most common location type for mass shootings (**33%**), with schools being the next most common (15%).
+A **third** of US mass shootings occurred in a **workplace**.
 
 ## Age Of Shooter
 
@@ -483,7 +483,7 @@ plot_age_bracket
 
 ```
 
-The age bracket with the highest number of mass shootings is the **20s** (34% of mass shootings).
+A **third** of mass shooters are in their **20s** (34% of mass shootings).
 
 ## Semi-Automatic Weapons
 
@@ -518,7 +518,7 @@ semi_auto_waffle
 
 ```
 
-65% of mass shootings involved **semi-automatic weapons**.
+Almost **two thirds** (65%) of mass shootings involved **semi-automatic weapons**.
 
 ## Multiple Weapons
 
@@ -565,7 +565,7 @@ multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Ye
 multiple_weapons_waffle
 ```
 
-53% of mass shootings involved **multiple weapons**.
+Just **over half** (53%) of mass shootings involved **multiple weapons**.
 
 ## Year & Age Bracket
 
