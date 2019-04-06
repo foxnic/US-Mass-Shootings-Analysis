@@ -22,6 +22,7 @@ library(knitr)
 library(sf)
 library(usmap)
 library(waffle)
+library(treemapify)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -153,37 +154,20 @@ colnames(shootings_per_state) <- c("state", "shootings")
 
 ```{r display_plot_state, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by state
-plot_state_bar <- ggplot(shootings_per_state, aes(y=shootings, x=reorder(state, shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e14646") +
-  coord_flip() +
-  labs(x = "state") +
-  geom_text(aes(label=shootings), hjust = -0.5, size = 4, col = "#666666") +
-  theme(
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.text.y = element_text(colour = "#666666", size = 8, hjust = 1),
-    axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    title = element_text(colour = "#666666"),
-    axis.line.x = element_line(colour = "#666666")
-    ) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 20))
+# Create a treemap chart of the shootings per state
+treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, label = state)) +
+  geom_treemap(aes(alpha = shootings)) +
+  geom_treemap_text(colour = "white", place = "centre",
+                    grow = TRUE)
 
-# Display the bar chart 
-plot_state_bar
+# Display the treemap chart of shootings per state
+treemap_state_shootings
 
-# Create a chart showing the states on a map of the US and shade the states by the number of shootings
-plot_state_map_shootings <- plot_usmap(data = shootings_per_state, values = "shootings", regions = "states", labels = TRUE) +
-  scale_fill_continuous(low = "white", high = "#e14646", name = "shootings") +
-  theme(legend.position = "right")
-
-# Display the map chart
-plot_state_map_shootings
 ```
 
 **California** is the state that has had the most mass shootings.  
 
-17% of the mass shootings were in California.
+**19** (17%) of the mass shootings were in California.
 
 ## US Mass Shooting Victims By State
 
