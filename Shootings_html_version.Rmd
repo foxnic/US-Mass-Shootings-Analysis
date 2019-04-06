@@ -321,24 +321,14 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 
 ```{r display_plot_prior, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by whether there were prior signs of mental healh issues
-plot_prior <- ggplot(shootings_per_prior, aes(y=shootings, x=reorder(prior_signs_of_MH_issues, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
-  labs(x = "prior signs of mental health issues",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 22),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
-    axis.title.x = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) +
-    coord_cartesian(ylim=c(0,70))
+# Create a treemap chart 
+treemap_prior_shootings <- ggplot(shootings_per_prior, aes(area = shootings, label = prior_signs_of_MH_issues)) +
+  geom_treemap(aes(alpha = shootings), fill = "#46b7e1") +
+  geom_treemap_text(colour = "white", place = "centre",
+                    grow = TRUE)
 
-# Display the bar chart 
-plot_prior
+# Display the treemap chart 
+treemap_prior_shootings
 
 ```
 
