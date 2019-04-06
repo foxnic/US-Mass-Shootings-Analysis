@@ -1,5 +1,7 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
+date: 06/04/2019
+author: Nic Fox
 output: 
   html_document:
     toc: true # table of content true
@@ -23,6 +25,7 @@ library(sf)
 library(usmap)
 library(waffle)
 library(treemapify)
+library(ggpubr)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -138,7 +141,15 @@ cleansed_data$prior_signs_mental_health_issues = case_when(
 )
 
 ```
+# About This Data
 
+This analysis is based on data on US mass shootings 1982 - 2019 provided by Mother Jones.  
+
+The download is available at:  
+
+https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/
+
+# Analysis  
 ## Victims By State
 
 ```{r create_state_victims_summary, include=FALSE}
@@ -164,7 +175,7 @@ plot_state_map_victims
 
 ```
 
-**Nevada** has had the most victims from mass shootings, due to the 2017 Las Vegas Strip massacre in which there were **604** victims - 546 injured, and 58 killed. 
+**Nevada** has had the most victims from mass shootings, due to the 2017 Las Vegas Strip massacre in which there were **604** victims (546 injured, and 58 killed). 
 
 ## Shootings By State
 
@@ -191,6 +202,7 @@ treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, lab
 treemap_state_shootings
 
 ```
+**35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.
 
 **California** has had the most mass shootings.  
 
@@ -210,7 +222,7 @@ colnames(shootings_per_gender) <- c("gender", "shootings")
 
 ### 96%
 
-##### of mass shooters were **men**
+of mass shooters were **men**
 
 ## Shootings Over Time
 
@@ -392,6 +404,24 @@ plot_loc_type <- ggplot(shootings_per_loc_type, aes(y=shootings, x=reorder(locat
 # Display the bar chart 
 plot_loc_type
 
+# Create a lollipop chart
+lollipop_chart_loc_type <- ggdotchart(shootings_per_loc_type, x = "location.1", y = "shootings",
+           #color = "???",                                # Color by groups
+           #palette = c("#00AFBB", "#E7B800", "#FC4E07"), # Custom color palette
+           sorting = "descending",                       # Sort value in descending order
+           add = "segments",                             # Add segments from y = 0 to dots
+           rotate = TRUE,                                # Rotate vertically
+           #group = "cyl",                                # Order by groups
+           dot.size = 6,                                 # Large dot size
+           label = round(shootings_per_loc_type$shootings),                # Add shootings values as dot labels
+           font.label = list(color = "white", size = 9, 
+                             vjust = 0.5),               # Adjust label parameters
+           ggtheme = theme_pubr()                        # ggplot2 theme
+           )
+
+# Display the lollipop chart
+lollipop_chart_loc_type
+
 ```
  
 
@@ -431,7 +461,7 @@ plot_age
 
 ```
 
-Shooter ages range from **11** to **66**.
+Shooter ages ranged from **11** to **66**.
 
 ## Age Bracket Of Shooter
 
@@ -483,7 +513,7 @@ plot_age_bracket
 
 ```
 
-A **third** of mass shooters are in their **20s** (34% of mass shootings).
+A **third** of mass shooters were in their **20s** (34% of mass shootings).
 
 ## Semi-Automatic Weapons
 
@@ -593,7 +623,9 @@ faceted_line_graph_year_age
   
 ```
 
-The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.
+There is a sharp increase in the number of mass shooters in their twenties.
+
+Note: The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.
 
 ## State & Race
 
@@ -1494,15 +1526,8 @@ plot_age_race
 
 ```
 
-## About This Data
-
-The dashboard is powered by data on US mass shootings 1982 - 2019 and has been provided by Mother Jones.  
-
-The download is available at:  
-
-https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/
-
-## Data Cleansing Changes - Gender
+# Data Cleanse
+## Gender
 
 The original breakdown of number of mass shootings by gender was:
 
@@ -1533,7 +1558,7 @@ kable(unique_genders)
 ```
   
 
-## Data Cleansing Changes - Race
+## Race
 
 The original breakdown of number of mass shootings by race was:
 
@@ -1562,7 +1587,7 @@ colnames(unique_races) <- c("Race", "Shootings")
 kable(unique_races)
 ```  
 
-## Data Cleansing Changes - Weapons Obtained Legally
+## Weapons Obtained Legally
 
 The original breakdown of number of mass shootings by "Weapons Obtained Legally" was:
 
@@ -1592,7 +1617,7 @@ kable(unique_legally)
 ```
   
 
-## Data Cleansing Changes - State
+## State
 
 A new column was added containing the state code e.g. CA for California.
 
@@ -1625,7 +1650,7 @@ kable(unique_state)
 
 ```  
 
-## Data Cleansing Changes - Location Type
+## Location Type
 
 The location types were:
 
@@ -1660,7 +1685,7 @@ colnames(unique_loc_type) <- c("Location Type", "Shootings")
 kable(unique_loc_type)
 ```  
 
-## Data Cleansing Changes - Prior Signs Of Mental Health Issues
+## Prior Signs Of Mental Health Issues
 
 The values in the imported data were:
 
