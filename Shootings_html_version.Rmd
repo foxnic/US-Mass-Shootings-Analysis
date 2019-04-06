@@ -139,7 +139,7 @@ cleansed_data$prior_signs_mental_health_issues = case_when(
 
 ```
 
-## US Mass Shooting Victims By State
+## Victims By State
 
 ```{r create_state_victims_summary, include=FALSE}
 
@@ -166,7 +166,7 @@ plot_state_map_victims
 
 **Nevada** has had the most victims from mass shootings, due to the 2017 Las Vegas Strip massacre in which there were **604** victims - 546 injured, and 58 killed. 
 
-## US Mass Shootings By State
+## Shootings By State
 
 ```{r create_state_summary, include=FALSE}
 
@@ -197,7 +197,7 @@ treemap_state_shootings
 **19** (17%) of the mass shootings were in California.
 
 
-## US Mass Shootings Over Time
+## Shootings Over Time
 
 
 ```{r create_year_summary, include=FALSE}
@@ -238,7 +238,7 @@ The number of mass shootings in the US is **increasing**.
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
 
-## US Mass Shootings By Gender
+## Shootings By Gender
 
 ```{r create_gender_summary, include=FALSE}
 
@@ -253,7 +253,7 @@ colnames(shootings_per_gender) <- c("gender", "shootings")
 
 ##### of mass shooters were **men**
 
-## US Mass Shootings By Race
+## Shootings By Race
 
 ```{r create_race_summary, include=FALSE}
 
@@ -288,7 +288,7 @@ plot_race
 
 56% of mass shooters were **white**.
 
-## Were There Prior Signs of Mental Health Issues?
+## Prior Signs of Mental Health Issues
 
 ```{r create_prior_summary, include=FALSE}
 
@@ -358,7 +358,7 @@ plot_legally
 
 72% of mass shooters obtained weapons **legally**.
 
-## US Mass Shootings By Location Type
+## Shootings By Location Type
 
 ```{r create_loc_type_summary, include=FALSE}
 
