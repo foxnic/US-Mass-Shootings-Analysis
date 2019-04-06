@@ -239,8 +239,8 @@ colnames(shootings_per_year) <- c("year", "shootings")
 
 # Create a line graph showing the number of mass shootings per year
 my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1)) +
-  geom_line(color="#49a4aa", size = 1)+
-  geom_point(color="#49a4aa")+
+  geom_line(color="#e27f46", size = 1)+
+  geom_point(color="#e27f46")+
   labs(x = "Year",
        y = "Number of mass shootings")+
   geom_text(aes(label=shootings), vjust = -1, size = 3, col = "#666666", fontface = "bold")+
@@ -277,23 +277,30 @@ colnames(shootings_per_race) <- c("race", "shootings")
 
 ```{r display_plot_race, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings per race
-plot_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e27f46") +
-  labs(x = "race",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
+# Create a lollipop chart using ggplot2 to show number of shootings per race
+lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -shootings))) +
+  geom_segment( aes(x = race, xend=race, y=0, yend=shootings), 
+                color = "#e0e1e2", 
+                size = 2) +
+  geom_point( size=18, 
+              color="#e14646", 
+              fill="#e14646", 
+              shape=21
+              ) +
+  labs(y = "Number of mass shootings") +
+  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 10) +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
-    axis.title = element_blank(),
     axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.x = element_blank(),
     panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) +
+    axis.line.x = element_line(colour = "#666666"))+
     coord_cartesian(ylim=c(0,70))
 
-# Display the bar chart showing shootings per race
-plot_race
+# Display the chart
+lollipop_race
 
 ```
 
@@ -314,7 +321,7 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 
 # Create a bar chart using ggplot2 to show shootings by whether there were prior signs of mental healh issues
 plot_prior <- ggplot(shootings_per_prior, aes(y=shootings, x=reorder(prior_signs_of_MH_issues, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e14646") +
+  geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
   labs(x = "prior signs of mental health issues",
        y = "number of mass shootings") +
   geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
@@ -350,7 +357,7 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 
 # Create a bar chart using ggplot2 to show shootings by whether weapons were obtained legally
 plot_legally <- ggplot(shootings_per_legally, aes(y=shootings, x=reorder(weapons_obtained_legally, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#46b7e1") +
+  geom_bar(position="dodge", stat="identity", fill = "#49a4aa") +
   labs(x = "wepons obtained legally",
        y = "number of mass shootings") +
   geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
@@ -390,12 +397,12 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
                 color = "#e0e1e2", 
                 size = 2) +
   geom_point( size=18, 
-              color="#e14646", 
-              fill="#e14646", 
+              color="#e1ad46", 
+              fill="#e1ad46", 
               shape=21
               ) +
   labs(y = "Number of mass shootings") +
-  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 11) +
+  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 10) +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
