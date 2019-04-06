@@ -7,25 +7,22 @@ body
 }
 
 h1 {
-    color: #666666;
-    text-align: center;
+    color: #3d65a5;
+    font-size: 38px;
+    font-weight: bold;
+    text-align: left;
 }
 
 h2 {
     color: #666666;
+    font-size: 34px;
     text-align: left;
     background-color: #e0e1e2;
 }
 
 h3 {
     color: #e1ad46;
-    font-size: 190px;
-    text-align: left;
-}
-
-h5 {
-    color: #b2b0b0;
-    font-size: 30px;
+    font-size: 140px;
     text-align: left;
 }
 
