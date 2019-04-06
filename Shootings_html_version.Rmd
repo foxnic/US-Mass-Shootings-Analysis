@@ -25,7 +25,6 @@ library(sf)
 library(usmap)
 library(waffle)
 library(treemapify)
-library(ggpubr)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -385,12 +384,18 @@ colnames(shootings_per_loc_type) <- c("location.1", "shootings")
 
 ```{r display_plot_loc_type, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by location type
-plot_loc_type <- ggplot(shootings_per_loc_type, aes(y=shootings, x=reorder(location.1, -shootings))) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e1ad46") +
-  labs(x = "location type",
-       y = "number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666") +
+# Create a lollipop chart using ggplot2 to show number of shootings per location type
+lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=location.1)) +
+  geom_segment( aes(x = location.1, xend=location.1, y=0, yend=shootings), 
+                color = "#e0e1e2", 
+                size = 2) +
+  geom_point( size=18, 
+              color="#e14646", 
+              fill="#e14646", 
+              shape=21
+              ) +
+  labs(y = "Number of mass shootings") +
+  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 11) +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
@@ -398,29 +403,11 @@ plot_loc_type <- ggplot(shootings_per_loc_type, aes(y=shootings, x=reorder(locat
     axis.title.y = element_text(colour = "#666666", size = 22),
     axis.title.x = element_blank(),
     panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) +
-    coord_cartesian(ylim=c(0,60))
+    axis.line.x = element_line(colour = "#666666"))+
+    coord_cartesian(ylim=c(0,50))
 
-# Display the bar chart 
-plot_loc_type
-
-# Create a lollipop chart
-lollipop_chart_loc_type <- ggdotchart(shootings_per_loc_type, x = "location.1", y = "shootings",
-           #color = "???",                                # Color by groups
-           #palette = c("#00AFBB", "#E7B800", "#FC4E07"), # Custom color palette
-           sorting = "descending",                       # Sort value in descending order
-           add = "segments",                             # Add segments from y = 0 to dots
-           rotate = TRUE,                                # Rotate vertically
-           #group = "cyl",                                # Order by groups
-           dot.size = 6,                                 # Large dot size
-           label = round(shootings_per_loc_type$shootings),                # Add shootings values as dot labels
-           font.label = list(color = "white", size = 9, 
-                             vjust = 0.5),               # Adjust label parameters
-           ggtheme = theme_pubr()                        # ggplot2 theme
-           )
-
-# Display the lollipop chart
-lollipop_chart_loc_type
+# Display the chart
+lollipop_loc_type
 
 ```
  
