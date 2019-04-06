@@ -193,7 +193,7 @@ colnames(shootings_per_state) <- c("state", "shootings")
 
 # Create a treemap chart of the shootings per state
 treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, label = state)) +
-  geom_treemap(aes(alpha = shootings)) +
+  geom_treemap(aes(alpha = shootings), fill = "#49a4aa") +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
 
