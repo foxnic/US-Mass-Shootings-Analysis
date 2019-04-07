@@ -25,6 +25,7 @@ library(sf)
 library(usmap)
 library(waffle)
 library(treemapify)
+library(ggrepel)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -324,26 +325,35 @@ victims_per_date_2018_2019 <- victims_per_date_2018_2019[, c("date", "victims")]
 ```{r display_timeline, echo=FALSE, fig.height=3, fig.width=10}
 
 # Create a single time line with bubbles representing victims by date for shootings in 2018 onwards
+
+#set.seed(42) #only needed if I use geom_label_repel, which I can't get to work at the moment
+
 timeline_chart <- ggplot(data = victims_per_date_2018_2019, aes(x = date, y = 0)) +
-  geom_hline(yintercept=0, linetype="solid", color = "#bcbaba", size=1)+
+  #geom_hline(yintercept=0, linetype="solid", color = "#bcbaba", size=1)+
   geom_point(aes(size = victims),
              shape = 21,
              colour = "#dd5202",
              alpha = 0.7,
              fill = "#e27f46") +
-  geom_text(data = subset(victims_per_date_2018_2019, victims > 0), aes(label=date), size = 4, angle = 45, hjust=0, vjust=0, col = "#666666", fontface = "bold") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
     panel.background = element_blank()) +
-    coord_cartesian(ylim=c(0,0))
+    coord_cartesian(ylim=c(0,0))+
+  geom_text(data = subset(victims_per_date_2018_2019, date == "2018-01-28" | date == "2019-02-15"), aes(label = date), size = 4, color = "#666666", hjust=-0.3, vjust=-0.3, angle=65)#+
+ # geom_label_repel(data = subset(victims_per_date_2018_2019, victims > 0), 
+#                 aes(label = date, fill = "#4cabab"), 
+ #                  color = "#666666", 
+  #                 size = 3.5)
 
 # Display the timeline chart
 timeline_chart
 
-```
+```  
+
+
 ## Shootings By Decade & State
 
 ```{r create_decade_column, include=FALSE}
