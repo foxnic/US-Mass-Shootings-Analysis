@@ -263,7 +263,7 @@ The number of mass shootings per year in the US is **increasing**.
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
 
-## Shootings Over Time By State
+## Shootings By Decade & State
 
 ```{r create_decade_column, include=FALSE}
 
@@ -292,15 +292,17 @@ colnames(shootings_per_decade_state) <- c("decade", "state", "shootings")
 # Create a heatmap showing the number of mass shootings per decade per state
 heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) + 
   geom_tile(aes(fill = shootings), colour = "white") + 
-  scale_fill_gradient(low = "white", high = "#e14646")+
-  scale_y_discrete(position = "right")+
+  scale_fill_gradient(low = "#edc84e", high = "#bc0303")+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 8),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 22),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 22),
     axis.title.x = element_text(colour = "#666666", size = 22),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"))
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"))+
+  scale_y_discrete(position = "right", 
+                   # Re-order the states so "AR"" is at the top rather than the bottom of the y axis
+                   limits = rev(levels(as.factor(shootings_per_decade_state$state))))
 
 # Display heatmap of shootings per decade and state
 heatmap_decade_state
