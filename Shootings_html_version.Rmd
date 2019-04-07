@@ -203,10 +203,7 @@ treemap_state_shootings
 ```
 **35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.
 
-**California** has had the most mass shootings.  
-
-**19** (17%) of the mass shootings were in California.
-
+**California** has had the most mass shootings (**19**).  
 
 ## Shootings By Gender
 
@@ -264,6 +261,50 @@ my_line_plot
 The number of mass shootings per year in the US is **increasing**.  
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
+
+
+## Shootings Over Time By State
+
+```{r create_decade_column, include=FALSE}
+
+# Create a new column called decade and populate it with the decade of each shooting 
+
+cleansed_data$decade <- case_when(
+    cleansed_data$year < "1990" ~ "1980-1989",
+    cleansed_data$year > "1989" & cleansed_data$year < "2000" ~"1990-1999",
+    cleansed_data$year > "1999" & cleansed_data$year < "2010" ~"2000-2009",
+    cleansed_data$year > "2009" & cleansed_data$year < "2020" ~"2010-2019"
+)
+
+```
+
+```{r create_decade_state_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per decade per state
+shootings_per_decade_state <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$state),FUN = sum)
+
+# Change the column heading names to "decade", "state", shootings"
+colnames(shootings_per_decade_state) <- c("decade", "state", "shootings")
+```
+
+```{r display_plot_decade_state, echo=FALSE, fig.height=7, fig.width=10}
+
+# Create a heatmap showing the number of mass shootings per decade per state
+heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) + 
+  geom_tile(aes(fill = shootings), colour = "white") + 
+  scale_fill_gradient(low = "white", high = "#e14646")+
+  scale_y_discrete(position = "right")+
+  theme(
+    axis.text.y = element_text(colour = "#666666", size = 8),
+    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.x = element_text(colour = "#666666", size = 22),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"))
+
+# Display heatmap of shootings per decade and state
+heatmap_decade_state
+```
 
 
 ## Shootings By Race
@@ -443,7 +484,7 @@ Shooter ages ranged from **11** to **66**.
 
 ```{r create_age_bracket_column, include=FALSE}
 
-# Create a new column called age_bracket and populate it with the age bracket of each shooter. Age brackets are: Child, Teen, 20s, 30s, 40s, 50s, 60s.
+# Create a new column called age_bracket and populate it with the age bracket of each shooter. 
 
 cleansed_data$age_bracket <- case_when(
     cleansed_data$age_of_shooter <= 12 ~ "1-12",
