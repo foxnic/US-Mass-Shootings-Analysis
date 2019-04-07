@@ -282,7 +282,7 @@ The number of mass shootings per year in the US is **increasing**.
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
-## Timeline 2008-2018
+## Timeline 2018-2019
 
 ```{r create_timeline_summary, include=FALSE}
 
