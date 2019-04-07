@@ -138,8 +138,28 @@ cleansed_data$prior_signs_mental_health_issues = case_when(
    cleansed_data$prior_signs_mental_health_issues == "Unknown" ~ "Unknown",
    cleansed_data$prior_signs_mental_health_issues == "Yes" ~ "Yes"
 )
+# Copy date to a new column called international_date as a character variable (rather than a factor)
+cleansed_data$international_date <- as.character.Date(cleansed_data$date) # copy the dates to the new column
 
+# Trim leading and trailing white spaces
+cleansed_data$international_date <- trimws(cleansed_data$international_date)
+
+# change /17 at the end of the string to /2017
+cleansed_data$international_date <- str_replace(cleansed_data$international_date, "^(.*/)[1]{1}[7]{1}$", "\\12017") 
+
+# change /18 at the end of the string to /2018
+cleansed_data$international_date <- str_replace(cleansed_data$international_date, "^(.*/)[1]{1}[8]{1}$", "\\12018") 
+
+# change /19 at the end of the string to /2019
+cleansed_data$international_date <- str_replace(cleansed_data$international_date, "^(.*/)[1]{1}[9]{1}$", "\\12019") 
+
+# Change the date from US format (month-day-year) to international date format (year-month-day)
+cleansed_data$international_date <- format(as.Date(cleansed_data$international_date, format = "%m/%d/%Y"), "%Y-%m-%d")
+
+# Change international_date to date format
+cleansed_data$international_date <- as.Date(cleansed_data$international_date)
 ```
+
 # About This Data
 
 This analysis is based on data on US mass shootings 1982 - 2019 provided by Mother Jones.  
@@ -220,8 +240,7 @@ colnames(shootings_per_gender) <- c("gender", "shootings")
 
 of mass shooters were **men**
 
-## Shootings Over Time
-
+## Shootings By Year
 
 ```{r create_year_summary, include=FALSE}
 
@@ -262,7 +281,69 @@ The number of mass shootings per year in the US is **increasing**.
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
+## Timeline 2008-2018
 
+```{r create_timeline_summary, include=FALSE}
+
+# Create a new data frame containing only the shootings from 2018 onwards
+cleansed_data_2018_to_2019 <- data.frame(cleansed_data[cleansed_data$year > "2017",c("case", "international_date", "total_victims")])
+
+# Create a new data frame that shows number of victims per date from 2018
+victims_per_date_2018_2019 <- aggregate(cleansed_data_2018_to_2019$total_victims, by=list(cleansed_data_2018_to_2019$international_date),FUN = sum)
+
+# Change the column heading names to "date" and "victims"
+colnames(victims_per_date_2018_2019) <- c("date", "victims")
+
+# Sort the data by date
+victims_per_date_2018_2019 <- victims_per_date_2018_2019[order(as.Date(victims_per_date_2018_2019$date, format="%Y/%m/%d")),]
+
+# Create a new data frame containing the rows in victims_per_date_2017_2019 plus rows with 0 victims for all the dates on which there were no mass shootings. Start by creating a list of all the dates between the 1st shooting and the latest.
+earliest_shooting <- as.Date(min(victims_per_date_2018_2019$date))
+most_recent_shooting <- as.Date(max(victims_per_date_2018_2019$date))
+date_range <- as.data.frame(seq(earliest_shooting, most_recent_shooting, by=1))
+
+# Change the column heading name to "date"
+colnames(date_range) <- "date"
+
+# Add a victims column with all values set to zero
+date_range$victims <- 0
+
+victims_per_date_2018_2019 <- right_join(victims_per_date_2018_2019, date_range, by = c("date"="date"))
+
+# Change the column heading names to date, victims, temp_victims
+colnames(victims_per_date_2018_2019) <- c("date", "victims", "temp_victims")
+
+# If victims is NA then set it to zero
+victims_per_date_2018_2019[is.na(victims_per_date_2018_2019$victims), c("victims")] <- 0
+
+# Remove the temp_victims column
+victims_per_date_2018_2019 <- victims_per_date_2018_2019[, c("date", "victims")]
+
+```
+
+```{r display_timeline, echo=FALSE, fig.height=3, fig.width=10}
+
+# Create a single time line with bubbles representing victims by date for shootings in 2018 onwards
+timeline_chart <- ggplot(data = victims_per_date_2018_2019, aes(x = date, y = 0)) +
+  geom_hline(yintercept=0, linetype="solid", color = "#bcbaba", size=1)+
+  geom_point(aes(size = victims),
+             shape = 21,
+             colour = "#dd5202",
+             alpha = 0.7,
+             fill = "#e27f46") +
+  geom_text(data = subset(victims_per_date_2018_2019, victims > 0), aes(label=date), size = 4, angle = 45, hjust=0, vjust=0, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.background = element_blank()) +
+    coord_cartesian(ylim=c(0,0))
+
+# Display the timeline chart
+timeline_chart
+
+```
 ## Shootings By Decade & State
 
 ```{r create_decade_column, include=FALSE}
