@@ -353,17 +353,17 @@ timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
              colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
   geom_segment(aes(x = as.Date("2016-06-12"), y = 0.007, xend = as.Date("2016-07-12"), yend = 0.0375), 
                colour = "#dd5202", size=0.5)+
-    geom_label(aes(x = as.Date("2016-07-01"), y = -0.05, label = "2016"), 
+    geom_label(aes(x = as.Date("2016-06-06"), y = -0.05, label = "2016"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
              colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
   geom_segment(aes(x = as.Date("2016-01-01"), y = 0.03, xend = as.Date("2016-01-01"), yend = -0.03), 
                colour = "gray", size=0.5)+
-    geom_label(aes(x = as.Date("2017-07-01"), y = -0.05, label = "2017"), 
+    geom_label(aes(x = as.Date("2017-06-06"), y = -0.05, label = "2017"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
              colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
   geom_segment(aes(x = as.Date("2017-01-01"), y = 0.03, xend = as.Date("2017-01-01"), yend = -0.03), 
                colour = "gray", size=0.5)+
-    geom_label(aes(x = as.Date("2018-07-01"), y = -0.05, label = "2018"), 
+    geom_label(aes(x = as.Date("2018-06-06"), y = -0.05, label = "2018"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
              colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
   geom_segment(aes(x = as.Date("2018-01-01"), y = 0.03, xend = as.Date("2018-01-01"), yend = -0.03), 
