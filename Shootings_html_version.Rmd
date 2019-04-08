@@ -282,25 +282,25 @@ The number of mass shootings per year in the US is **increasing**.
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
-## Timeline 2018-2019
+## Timeline 2016-2019
 
 ```{r create_timeline_summary, include=FALSE}
 
-# Create a new data frame containing only the shootings from 2018 onwards
-cleansed_data_2018_to_2019 <- data.frame(cleansed_data[cleansed_data$year > "2017",c("case", "international_date", "total_victims")])
+# Create a new data frame containing only the shootings in 2016-2019
+cleansed_data_timeline <- data.frame(cleansed_data[cleansed_data$year > "2015" ,c("case", "international_date", "total_victims")])
 
-# Create a new data frame that shows number of victims per date from 2018
-victims_per_date_2018_2019 <- aggregate(cleansed_data_2018_to_2019$total_victims, by=list(cleansed_data_2018_to_2019$international_date),FUN = sum)
+# Create a new data frame that shows number of victims per date 
+victims_per_date <- aggregate(cleansed_data_timeline$total_victims, by=list(cleansed_data_timeline$international_date),FUN = sum)
 
 # Change the column heading names to "date" and "victims"
-colnames(victims_per_date_2018_2019) <- c("date", "victims")
+colnames(victims_per_date) <- c("date", "victims")
 
 # Sort the data by date
-victims_per_date_2018_2019 <- victims_per_date_2018_2019[order(as.Date(victims_per_date_2018_2019$date, format="%Y/%m/%d")),]
+victims_per_date <- victims_per_date[order(as.Date(victims_per_date$date, format="%Y/%m/%d")),]
 
-# Create a new data frame containing the rows in victims_per_date_2017_2019 plus rows with 0 victims for all the dates on which there were no mass shootings. Start by creating a list of all the dates between the 1st shooting and the latest.
-earliest_shooting <- as.Date(min(victims_per_date_2018_2019$date))
-most_recent_shooting <- as.Date(max(victims_per_date_2018_2019$date))
+# Create a new data frame containing the rows in victims_per_date plus rows with 0 victims for all the dates on which there were no mass shootings. Start by creating a list of all the dates between the 1st shooting and the latest.
+earliest_shooting <- as.Date(min(victims_per_date$date))
+most_recent_shooting <- as.Date(max(victims_per_date$date))
 date_range <- as.data.frame(seq(earliest_shooting, most_recent_shooting, by=1))
 
 # Change the column heading name to "date"
@@ -309,27 +309,27 @@ colnames(date_range) <- "date"
 # Add a victims column with all values set to zero
 date_range$victims <- 0
 
-victims_per_date_2018_2019 <- right_join(victims_per_date_2018_2019, date_range, by = c("date"="date"))
+victims_per_date <- right_join(victims_per_date, date_range, by = c("date"="date"))
 
 # Change the column heading names to date, victims, temp_victims
-colnames(victims_per_date_2018_2019) <- c("date", "victims", "temp_victims")
+colnames(victims_per_date) <- c("date", "victims", "temp_victims")
 
 # If victims is NA then set it to zero
-victims_per_date_2018_2019[is.na(victims_per_date_2018_2019$victims), c("victims")] <- 0
+victims_per_date[is.na(victims_per_date$victims), c("victims")] <- 0
 
 # Remove the temp_victims column
-victims_per_date_2018_2019 <- victims_per_date_2018_2019[, c("date", "victims")]
+victims_per_date <- victims_per_date[, c("date", "victims")]
+
+# Change zeros to NA so a point isn't displayed on the plot for dates with no shootings
+victims_per_date[victims_per_date$victims == 0, "victims"] <- NA
 
 ```
 
-```{r display_timeline, echo=FALSE, fig.height=3, fig.width=10}
+```{r display_timeline, echo=FALSE, fig.height=3, fig.width=10, message=FALSE, warning=FALSE}
 
-# Create a single time line with bubbles representing victims by date for shootings in 2018 onwards
+# Create a single time line with bubbles representing victims by date for shootings between 2016 and 2019
 
-#set.seed(42) #only needed if I use geom_label_repel, which I can't get to work at the moment
-
-timeline_chart <- ggplot(data = victims_per_date_2018_2019, aes(x = date, y = 0)) +
-  #geom_hline(yintercept=0, linetype="solid", color = "#bcbaba", size=1)+
+timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
   geom_point(aes(size = victims),
              shape = 21,
              colour = "#dd5202",
@@ -341,20 +341,20 @@ timeline_chart <- ggplot(data = victims_per_date_2018_2019, aes(x = date, y = 0)
     axis.ticks = element_blank(),
     axis.title = element_blank(),
     panel.background = element_blank()) +
-    coord_cartesian(ylim=c(-0.1,0.1))+
-  geom_text(data = subset(victims_per_date_2018_2019, date == "2018-01-28" | date == "2019-02-15"), 
+    coord_cartesian(ylim=c(-0.025,0.1))+
+  geom_text(data = subset(victims_per_date, date == "2016-02-20" | date == "2019-02-15"), 
             aes(label = date), size = 4, color = "#666666", 
-            hjust=-0.3, vjust=-0.3, angle=65)+
-  geom_label(aes(x = as.Date("2018-07-30"), y = 0.095, label = "This is the \n30th of July"), 
+            hjust=0.5, vjust=2)+
+  geom_label(aes(x = as.Date("2017-10-01"), y = 0.05, label = "Las Vegas Strip massacre\n1st Oct 2017.\n604 victims."), 
              hjust = 0, vjust = 0.5, lineheight = 0.8,
              colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2018-07-30"), y = 0.005, xend = as.Date("2018-08-05"), yend = 0.075), 
-               colour = "#555555", size=0.5)+
-  geom_label(aes(x = as.Date("2018-05-01"), y = 0.095, label = "This is the \n1st of May"), 
+  geom_segment(aes(x = as.Date("2017-10-01"), y = 0.006, xend = as.Date("2017-11-01"), yend = 0.035), 
+               colour = "#666666", size=0.5)+
+  geom_label(aes(x = as.Date("2018-11-07"), y = 0.05, label = "This is the \n7th Nov 2018"), 
              hjust = 0, vjust = 0.5, lineheight = 0.8,
              colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2018-05-01"), y = 0.005, xend = as.Date("2018-05-06"), yend = 0.075), 
-               colour = "#555555", size=0.5)
+  geom_segment(aes(x = as.Date("2018-11-07"), y = 0.006, xend = as.Date("2018-12-07"), yend = 0.035), 
+               colour = "#666666", size=0.5)
 
 # Display the timeline chart
 timeline_chart
