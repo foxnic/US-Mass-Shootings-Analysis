@@ -330,6 +330,7 @@ victims_per_date[victims_per_date$victims == 0, "victims"] <- NA
 # Create a single time line with bubbles representing victims by date for shootings between 2016 and 2019
 
 timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray", size = 0.75)+
   geom_point(aes(size = victims),
              shape = 21,
              colour = "#dd5202",
@@ -349,12 +350,12 @@ timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
              hjust = 0, vjust = 0.5, lineheight = 0.8,
              colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
   geom_segment(aes(x = as.Date("2017-10-01"), y = 0.006, xend = as.Date("2017-11-01"), yend = 0.035), 
-               colour = "#666666", size=0.5)+
-  geom_label(aes(x = as.Date("2018-11-07"), y = 0.05, label = "This is the \n7th Nov 2018"), 
+               colour = "gray", size=0.5)+
+  geom_label(aes(x = as.Date("2016-06-12"), y = 0.05, label = "Orlando nightclub massacre\n12th June 2016.\n102 victims."), 
              hjust = 0, vjust = 0.5, lineheight = 0.8,
              colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2018-11-07"), y = 0.006, xend = as.Date("2018-12-07"), yend = 0.035), 
-               colour = "#666666", size=0.5)
+  geom_segment(aes(x = as.Date("2016-06-12"), y = 0.006, xend = as.Date("2016-07-12"), yend = 0.035), 
+               colour = "gray", size=0.5)
 
 # Display the timeline chart
 timeline_chart
