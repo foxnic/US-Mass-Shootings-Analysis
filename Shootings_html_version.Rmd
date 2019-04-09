@@ -26,6 +26,10 @@ library(usmap)
 library(waffle)
 library(treemapify)
 library(ggrepel)
+library(gganimate)
+library(tweenr)
+library(gifski)
+library(png)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -281,6 +285,36 @@ my_line_plot
 The number of mass shootings per year in the US is **increasing**.  
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
+
+## Shootings Per State Over Time
+
+```{r create_year_state_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per year per state
+shootings_per_year_state <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$state),FUN = sum)
+
+# Change the column heading names to "year", "state", "shootings"
+colnames(shootings_per_year_state) <- c("year", "state", "shootings")
+
+```
+
+
+```{r animated_plot, echo=FALSE, fig.height=7, fig.width=10}
+
+animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shootings, fill = "#e14646")) +
+  geom_col()+
+  #scale_fill_viridis_d(name="")+
+  theme(legend.position = "none",
+        #axis.text.x = element_blank(),
+        axis.ticks = element_blank())+
+  # Here comes the gganimate specific bits
+  labs(title = "Year: {frame_time}", x = "", y = "Shootings") +
+  transition_time(year) +
+  ease_aes('linear')        
+
+animated_plot
+```
+
 
 ## Timeline 2016-2019
 
