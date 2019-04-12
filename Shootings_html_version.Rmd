@@ -313,7 +313,10 @@ animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shoo
   geom_col()+
   scale_fill_viridis_d(aesthetics = "fill", option = "A", direction = 1, begin = 0.2, end = 1)+
   theme(legend.position = "none",
-        axis.ticks = element_blank())+
+        axis.ticks = element_blank(),
+        panel.background = element_blank(), # Remove the grey background
+        panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
+        panel.grid.minor = element_line(colour = "#e0e0e0"))+ # Add the minor grid lines back in)
   # The gganimate specific bits:
   labs(title = "Year: {frame_time}", x = "", y = "Shootings") +
   transition_time(year) +
@@ -725,7 +728,10 @@ faceted_line_graph_year_age <- ggplot(data=without_child_age_bracket, aes(x=Year
   theme(legend.position = "none", # Remove the legend
         strip.text.x = element_text(size = 22, colour = "#666666"), # Change the size of the facet titles
         axis.text = element_text(size = 18, colour = "#666666"), # Change the size of the axis numbers/years
-        axis.title = element_text(size = 18, colour = "#666666"))+
+        axis.title = element_text(size = 18, colour = "#666666"),
+        panel.background = element_blank(), # Remove the grey background
+        panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
+        panel.grid.minor = element_line(colour = "#e0e0e0"))+ # Add the minor grid lines back in)
   facet_wrap(~Age_Bracket)
 
 # Display the faceted line graph

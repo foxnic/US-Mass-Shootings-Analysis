@@ -1,20 +1,20 @@
 body
 {
-  color: #666666;
+  color: #302f2f;
   font-family: 'Verdana', sans-serif;
   font-size: 22px;
   text-align: left;
 }
 
 h1 {
-    color: #3178c4;
+    color: #302f2f;
     font-size: 38px;
     font-weight: bold;
     text-align: left;
 }
 
 h2 {
-    color: #666666;
+    color: #302f2f;
     font-size: 34px;
     text-align: left;
     background-color: #e0e1e2;
