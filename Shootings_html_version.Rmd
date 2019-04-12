@@ -1,13 +1,13 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
-date: 06/04/2019
+date: 12/04/2019
 author: Nic Fox
 output: 
   html_document:
     toc: true # table of content true
     toc_depth: 2  # upto three depths of headings (specified by #, ## and ###)
     toc_float: true # table of contents is always visible, to the left of the document
-    #theme: united  # many options for theme, this one is my favorite.
+    theme: united
 css: "Shootings.css"
 ---
 
@@ -169,7 +169,7 @@ cleansed_data$international_date <- format(as.Date(cleansed_data$international_d
 cleansed_data$international_date <- as.Date(cleansed_data$international_date)
 ```
 
-# About This Data
+# Data
 
 This analysis is based on data on US mass shootings 1982 - 2019 provided by Mother Jones.  
 
@@ -196,7 +196,8 @@ colnames(victims_by_state) <- c("state", "victims")
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE) +
   scale_fill_continuous(low = colour_palette[55], high = colour_palette[20], na.value = "white", name = "victims") +
-  theme(legend.position = "right")
+  theme(legend.position = "right", plot.margin=unit(c(1.5,0,1.5,0),"cm"))
+  
 
 # Display the map chart
 plot_state_map_victims
@@ -271,9 +272,10 @@ my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1
   geom_text(data=subset(shootings_per_year, year == "1984" | year == "1989"  | year == "1991"| year == "1993" | year == "1999" | year == "2012" | year == "2017" | year == "2018"), aes(label=shootings), vjust = -1, size = 6, col = "#666666", fontface = "bold")+
   theme(
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 16, angle = 90, vjust = 0.5),
+    axis.text.x = element_text(colour = "#666666", size = 18, angle = 90, vjust = 0.5),
     axis.ticks = element_blank(),
-    axis.title = element_text(colour = "#666666", size = 16),
+    axis.title.y = element_text(colour = "#666666", size = 18),
+    axis.title.x = element_blank(),
     title = element_text(colour = "#666666"),
     plot.title = element_text(hjust = 0.5),
     axis.line.x = element_line(colour = "#666666"),
@@ -314,9 +316,12 @@ animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shoo
   scale_fill_viridis_d(aesthetics = "fill", option = "A", direction = 1, begin = 0.2, end = 1)+
   theme(legend.position = "none",
         axis.ticks = element_blank(),
+        axis.text = element_text(colour = "#666666", size = 16, angle = 90, vjust = 0.5),
+        axis.title = element_text(colour = "#666666", size = 16),
         panel.background = element_blank(), # Remove the grey background
         panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
-        panel.grid.minor = element_line(colour = "#e0e0e0"))+ # Add the minor grid lines back in)
+        panel.grid.minor = element_line(colour = "#e0e0e0"), # Add the minor grid lines back in)
+        plot.margin=unit(c(1.5,0,1.5,0),"cm"))+ 
   # The gganimate specific bits:
   labs(title = "Year: {frame_time}", x = "", y = "Shootings") +
   transition_time(year) +
@@ -385,7 +390,8 @@ timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
     axis.text.x = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_blank()) +
+    panel.background = element_blank(),
+    plot.margin=unit(c(1.5,0,1.5,0),"cm")) +
     coord_cartesian(ylim=c(-0.1,0.1))+
   geom_label(aes(x = as.Date("2018-03-01"), y = 0.06, label = "Thousand Oaks nightclub shooting\n7th Nov 2018.\n34 victims."), 
              hjust = 0, vjust = 0.5, lineheight = 0.8,
@@ -465,12 +471,13 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
   geom_tile(aes(fill = shootings), colour = "white") + 
   scale_fill_gradient(low = colour_palette[50], high = colour_palette[20])+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.text.y = element_text(colour = "#666666", size = 14),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"))+
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
   scale_y_discrete(position = "right", 
                    # Re-order the states so "AR"" is at the top rather than the bottom of the y axis
                    limits = rev(levels(as.factor(shootings_per_decade_state$state))))
@@ -479,6 +486,7 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
 heatmap_decade_state
 ```
 
+**California** and **Texas** have had mass shootings in every decade.  
 
 ## Shootings By Race
 
@@ -498,7 +506,7 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
   geom_segment( aes(x = race, xend=race, y=0, yend=shootings), 
                 color = "#e0e1e2", 
                 size = 2) +
-  geom_point( size=26, 
+  geom_point( size=14, 
               color=colour_palette[20], 
               fill=colour_palette[20], 
               shape=21
@@ -509,10 +517,11 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
     panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"))+
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
     coord_cartesian(ylim=c(0,70))
 
 # Display the chart
@@ -592,7 +601,7 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
   geom_segment( aes(x = location.1, xend=location.1, y=0, yend=shootings), 
                 color = "#e0e1e2", 
                 size = 2) +
-  geom_point( size=26, 
+  geom_point( size=14, 
               color=colour_palette[60], 
               fill=colour_palette[60], 
               shape=21
@@ -603,10 +612,11 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
     panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"))+
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
     coord_cartesian(ylim=c(0,50))
 
 # Display the chart
@@ -633,17 +643,18 @@ colnames(shootings_per_age) <- c("age_of_shooter", "shootings")
 # Create a bar chart using ggplot2 to show shootings by age
 plot_age <- ggplot(shootings_per_age, aes(y=shootings, x=age_of_shooter)) + 
   geom_bar(position="dodge", stat="identity", fill = colour_palette[45]) +
-  labs(x = "age",
-       y = "number of mass shootings") +
+  labs(x = "Age",
+       y = "Number of mass shootings") +
   geom_text(aes(label=shootings), vjust = -0.5, size = 6, col = "#666666", fontface = "bold") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
     panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) +
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1.5,0,1.5,0),"cm")) +
     coord_cartesian(ylim=c(0,8))
 
 # Display the bar chart 
@@ -685,17 +696,18 @@ colnames(shootings_per_age_bracket) <- c("age_bracket", "shootings")
 # Create a bar chart using ggplot2 to show shootings by age bracket
 plot_age_bracket <- ggplot(shootings_per_age_bracket, aes(y=shootings, x=age_bracket)) + 
   geom_bar(position="dodge", stat="identity", fill = colour_palette[30]) +
-  labs(x = "age bracket",
-       y = "number of mass shootings") +
+  labs(x = "Age bracket",
+       y = "Number of mass shootings") +
   geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666", fontface = "bold") +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 22),
+    axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(), 
     panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) +
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1.5,0,1.5,0),"cm")) +
     coord_cartesian(ylim=c(0,40))
 
 # Display the bar chart 
@@ -817,7 +829,7 @@ shootings_per_multiple$percentage <- round(shootings_per_multiple$shootings / su
 ```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
 
 # Create a waffle chart
-multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[30], 'No'=colour_palette[70]))
+multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[40], 'No'=colour_palette[70]))
 
 # Display the waffle chart
 multiple_weapons_waffle

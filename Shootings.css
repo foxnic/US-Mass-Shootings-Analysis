@@ -4,6 +4,8 @@ body
   font-family: 'Verdana', sans-serif;
   font-size: 22px;
   text-align: left;
+  line-height: 1.5em;
+  letter-spacing: 0.05em;
 }
 
 h1 {
