@@ -30,12 +30,16 @@ library(gganimate)
 library(tweenr)
 library(gifski)
 library(png)
+library(viridis)
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
 
 # Create a copy of the data to change during cleansing, so that the original data is preserved
 cleansed_data <- imported_data
+
+# Create the colour palette for the data visualisations using the magma colour palette from the viridis package
+colour_palette <- magma(101)
 ```
 
 ```{r cleanse_data, include=FALSE}
@@ -191,7 +195,7 @@ colnames(victims_by_state) <- c("state", "victims")
 
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE) +
-  scale_fill_continuous(low = "white", high = "#46b7e1", name = "victims") +
+  scale_fill_continuous(low = colour_palette[55], high = colour_palette[20], na.value = "white", name = "victims") +
   theme(legend.position = "right")
 
 # Display the map chart
@@ -218,7 +222,7 @@ colnames(shootings_per_state) <- c("state", "shootings")
 
 # Create a treemap chart of the shootings per state
 treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, label = state)) +
-  geom_treemap(aes(alpha = shootings), fill = "#49a4aa") +
+  geom_treemap(aes(alpha = shootings), fill = colour_palette[20]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
 
@@ -260,8 +264,8 @@ colnames(shootings_per_year) <- c("year", "shootings")
 
 # Create a line graph showing the number of mass shootings per year
 my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1)) +
-  geom_line(color="#e27f46", size = 2)+
-  geom_point(color="#e27f46")+
+  geom_line(color="#FB825F", size = 2)+
+  geom_point(color="#FB825F")+
   labs(x = "Year",
        y = "Number of mass shootings")+
   geom_text(data=subset(shootings_per_year, year == "1984" | year == "1989"  | year == "1991"| year == "1993" | year == "1999" | year == "2012" | year == "2017" | year == "2018"), aes(label=shootings), vjust = -1, size = 6, col = "#666666", fontface = "bold")+
@@ -301,13 +305,12 @@ colnames(shootings_per_year_state) <- c("year", "state", "shootings")
 
 ```{r animated_plot, echo=FALSE, fig.height=7, fig.width=10}
 
-animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shootings, fill = "#e14646")) +
+animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shootings, fill = state)) +
   geom_col()+
-  #scale_fill_viridis_d(name="")+
+  scale_fill_viridis_d(aesthetics = "fill", option = "A", direction = 1, begin = 0.2, end = 1)+
   theme(legend.position = "none",
-        #axis.text.x = element_blank(),
         axis.ticks = element_blank())+
-  # Here comes the gganimate specific bits
+  # The gganimate specific bits:
   labs(title = "Year: {frame_time}", x = "", y = "Shootings") +
   transition_time(year) +
   ease_aes('linear')        
@@ -453,7 +456,7 @@ colnames(shootings_per_decade_state) <- c("decade", "state", "shootings")
 # Create a heatmap showing the number of mass shootings per decade per state
 heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) + 
   geom_tile(aes(fill = shootings), colour = "white") + 
-  scale_fill_gradient(low = "#edc84e", high = "#bc0303")+
+  scale_fill_gradient(low = colour_palette[50], high = colour_palette[20])+
   theme(
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 22),
@@ -489,8 +492,8 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
                 color = "#e0e1e2", 
                 size = 2) +
   geom_point( size=18, 
-              color="#e14646", 
-              fill="#e14646", 
+              color=colour_palette[20], 
+              fill=colour_palette[20], 
               shape=21
               ) +
   labs(y = "Number of mass shootings") +
@@ -527,7 +530,7 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 
 # Create a treemap chart 
 treemap_prior_shootings <- ggplot(shootings_per_prior, aes(area = shootings, label = prior_signs_of_MH_issues)) +
-  geom_treemap(aes(alpha = shootings), fill = "#46b7e1") +
+  geom_treemap(aes(alpha = shootings), fill = "#e1ad46") +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
 
@@ -553,7 +556,7 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 
 # Create a treemap chart for shootings involving legal and illegal weapons
 treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
-  geom_treemap(aes(alpha = shootings), fill = "#49a4aa") +
+  geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
 
@@ -583,8 +586,8 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
                 color = "#e0e1e2", 
                 size = 2) +
   geom_point( size=18, 
-              color="#e1ad46", 
-              fill="#e1ad46", 
+              color=colour_palette[60], 
+              fill=colour_palette[60], 
               shape=21
               ) +
   labs(y = "Number of mass shootings") +
@@ -622,7 +625,7 @@ colnames(shootings_per_age) <- c("age_of_shooter", "shootings")
 
 # Create a bar chart using ggplot2 to show shootings by age
 plot_age <- ggplot(shootings_per_age, aes(y=shootings, x=age_of_shooter)) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e27f46") +
+  geom_bar(position="dodge", stat="identity", fill = colour_palette[45]) +
   labs(x = "age",
        y = "number of mass shootings") +
   geom_text(aes(label=shootings), vjust = -0.5, size = 6, col = "#666666", fontface = "bold") +
@@ -674,7 +677,7 @@ colnames(shootings_per_age_bracket) <- c("age_bracket", "shootings")
 
 # Create a bar chart using ggplot2 to show shootings by age bracket
 plot_age_bracket <- ggplot(shootings_per_age_bracket, aes(y=shootings, x=age_bracket)) + 
-  geom_bar(position="dodge", stat="identity", fill = "#e14646") +
+  geom_bar(position="dodge", stat="identity", fill = colour_palette[30]) +
   labs(x = "age bracket",
        y = "number of mass shootings") +
   geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666", fontface = "bold") +
@@ -750,7 +753,7 @@ shootings_per_semi$percentage <- round(shootings_per_semi$shootings / sum(shooti
 ```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=2}
 
 # Create a waffle chart
-semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= "#49a4aa", 'No'="#e14646"))
+semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= colour_palette[20], 'No'=colour_palette[96]))
 
 # Display the waffle chart
 semi_auto_waffle
@@ -798,7 +801,7 @@ shootings_per_multiple$percentage <- round(shootings_per_multiple$shootings / su
 ```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
 
 # Create a waffle chart
-multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= "#49a4aa", 'No'="#e14646"))
+multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[30], 'No'=colour_palette[70]))
 
 # Display the waffle chart
 multiple_weapons_waffle
