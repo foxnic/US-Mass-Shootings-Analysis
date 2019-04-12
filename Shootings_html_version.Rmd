@@ -415,22 +415,22 @@ timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
                colour = "#dd5202", size=0.5)+
     geom_label(aes(x = as.Date("2016-06-06"), y = -0.05, label = "2016"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
+             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
   geom_segment(aes(x = as.Date("2016-01-01"), y = 0.03, xend = as.Date("2016-01-01"), yend = -0.03), 
                colour = "gray", size=0.5)+
     geom_label(aes(x = as.Date("2017-06-06"), y = -0.05, label = "2017"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
+             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
   geom_segment(aes(x = as.Date("2017-01-01"), y = 0.03, xend = as.Date("2017-01-01"), yend = -0.03), 
                colour = "gray", size=0.5)+
     geom_label(aes(x = as.Date("2018-06-06"), y = -0.05, label = "2018"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
+             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
   geom_segment(aes(x = as.Date("2018-01-01"), y = 0.03, xend = as.Date("2018-01-01"), yend = -0.03), 
                colour = "gray", size=0.5)+
-    geom_label(aes(x = as.Date("2019-02-15"), y = -0.05, label = "2019"), 
+    geom_label(aes(x = as.Date("2019-01-30"), y = -0.05, label = "2019"), 
              hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 4)+ 
+             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
   geom_segment(aes(x = as.Date("2019-01-01"), y = 0.03, xend = as.Date("2019-01-01"), yend = -0.03), 
                colour = "gray", size=0.5)
 
@@ -506,13 +506,13 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
   geom_segment( aes(x = race, xend=race, y=0, yend=shootings), 
                 color = "#e0e1e2", 
                 size = 2) +
-  geom_point( size=14, 
+  geom_point( size=15, 
               color=colour_palette[20], 
               fill=colour_palette[20], 
               shape=21
               ) +
   labs(y = "Number of mass shootings") +
-  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 10) +
+  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 9) +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
@@ -601,13 +601,13 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
   geom_segment( aes(x = location.1, xend=location.1, y=0, yend=shootings), 
                 color = "#e0e1e2", 
                 size = 2) +
-  geom_point( size=14, 
+  geom_point( size=15, 
               color=colour_palette[60], 
               fill=colour_palette[60], 
               shape=21
               ) +
   labs(y = "Number of mass shootings") +
-  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 10) +
+  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 9) +
   theme(
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 22),
