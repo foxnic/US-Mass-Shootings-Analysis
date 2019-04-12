@@ -273,13 +273,17 @@ my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 16, angle = 90, vjust = 0.5),
     axis.ticks = element_blank(),
-    axis.title = element_text(colour = "#666666", size = 22),
+    axis.title = element_text(colour = "#666666", size = 16),
     title = element_text(colour = "#666666"),
     plot.title = element_text(hjust = 0.5),
     axis.line.x = element_line(colour = "#666666"),
-    axis.line.y = element_line(colour = "#666666"))+
-    geom_smooth(method = "loess", colour = "#666666", linetype = 2, size = 0.5 )+
-    coord_cartesian(ylim=c(0,15))
+    axis.line.y = element_line(colour = "#666666"),
+    panel.background = element_blank(), # Remove the grey background
+    panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
+    panel.grid.minor = element_line(colour = "#e0e0e0"), # Add the minor grid lines back in
+    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
+  geom_smooth(method = "loess", colour = "#666666", linetype = 2, size = 0.5 )+
+  coord_cartesian(ylim=c(0,15))
 
 # Display the line plot
 my_line_plot
