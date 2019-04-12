@@ -462,7 +462,7 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
     axis.text.x = element_text(colour = "#666666", size = 22),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 22),
-    axis.title.x = element_text(colour = "#666666", size = 22),
+    axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"))+
   scale_y_discrete(position = "right", 
                    # Re-order the states so "AR"" is at the top rather than the bottom of the y axis
@@ -491,7 +491,7 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
   geom_segment( aes(x = race, xend=race, y=0, yend=shootings), 
                 color = "#e0e1e2", 
                 size = 2) +
-  geom_point( size=18, 
+  geom_point( size=26, 
               color=colour_palette[20], 
               fill=colour_palette[20], 
               shape=21
@@ -585,7 +585,7 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
   geom_segment( aes(x = location.1, xend=location.1, y=0, yend=shootings), 
                 color = "#e0e1e2", 
                 size = 2) +
-  geom_point( size=18, 
+  geom_point( size=26, 
               color=colour_palette[60], 
               fill=colour_palette[60], 
               shape=21
@@ -713,9 +713,15 @@ without_child_age_bracket <- shootings_per_year_age[shootings_per_year_age$Age_B
 
 # Create a faceted line graph showing the number of mass shootings per year for each age bracket
 faceted_line_graph_year_age <- ggplot(data=without_child_age_bracket, aes(x=Year, y = Num_Shootings, colour = Age_Bracket, group=1)) + 
-  geom_line()+
+  labs(x = "Year", y="Number of Mass Shootings")+
+  geom_line(size = 2)+
   geom_point()+
+  scale_color_viridis_d(option = "magma", begin = 0.1, end = 0.85) +
   geom_smooth(method = "lm", colour = "#666666", linetype = 2, size = 0.5 )+
+  theme(legend.position = "none", # Remove the legend
+        strip.text.x = element_text(size = 22, colour = "#666666"), # Change the size of the facet titles
+        axis.text = element_text(size = 18, colour = "#666666"), # Change the size of the axis numbers/years
+        axis.title = element_text(size = 18, colour = "#666666"))+
   facet_wrap(~Age_Bracket)
 
 # Display the faceted line graph
