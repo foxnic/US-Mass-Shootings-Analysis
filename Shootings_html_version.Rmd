@@ -940,22 +940,25 @@ colnames(shootings_per_state_race) <- c("State", "Race", "Num_Shootings")
 
 ```{r display_plot_state_race, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by state and race
- plot_state_race <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Race), data = shootings_per_state_race, stat = "identity", position= "fill") +
-  scale_fill_manual(values = c(colour_palette[50], colour_palette[60], colour_palette[70], colour_palette[80], colour_palette[90])) +
-  labs(x = "State",
-       y = "% of mass shootings") +
+# Create a heatmap showing the number of mass shootings per state per race
+heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#f2c5ae", high = colour_palette[80])+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 5) +
+  labs(fill = "Number of Shootings")+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 7.5),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm")) 
+    axis.title.y = element_text(colour = "#666666", size = 10),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_race$Race))))
 
-# Display the bar chart 
-plot_state_race
+# Display heatmap of shootings per race and state
+heatmap_state_race
 
 ```
 
@@ -971,23 +974,25 @@ colnames(shootings_per_state_legally) <- c("State", "Weapons_Obtained_Legally", 
 
 ```{r display_plot_state_legally, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by state and whether weapons were obtained legally
- plot_state_legally <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Weapons_Obtained_Legally), data = shootings_per_state_legally, stat = "identity", position= "fill") +
-  scale_fill_manual(values = c(colour_palette[60], colour_palette[80], colour_palette[97])) +
-  labs(x = "State",
-       y = "% of mass shootings",
-       fill = "Weapons Obtained Legally?") +
+# Create a heatmap showing the number of mass shootings per state per race
+heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtained_Legally, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#f4d8d4", high = colour_palette[70])+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 5) +
+  labs(x = "Weapons Obtained Legally?", fill = "Number of Shootings")+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 7.5),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm")) 
+    axis.title.y = element_text(colour = "#666666", size = 10),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_legally$Weapons_Obtained_Legally))))
 
-# Display the bar chart 
-plot_state_legally
+# Display heatmap of shootings per state and whether weapons were obtained legally
+heatmap_state_legally
 
 ```  
 
@@ -1004,23 +1009,25 @@ colnames(shootings_per_state_loc_type) <- c("State", "Location_Type", "Num_Shoot
 
 ```{r display_plot_state_loc_type, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by state and location type
- plot_state_loc_type <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Location_Type), data = shootings_per_state_loc_type, stat = "identity", position = "fill") +
-  scale_fill_manual(values = c(colour_palette[40],colour_palette[50], colour_palette[60], colour_palette[70], colour_palette[80], colour_palette[90])) +
-  labs(x = "State",
-       y = "% of mass shootings",
-       fill = "Location Type") +
+# Create a heatmap showing the number of mass shootings per state per location type
+heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#f2d0d8", high = colour_palette[60])+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 5) +
+  labs(x = "Location Type", fill = "Number of Shootings")+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 7.5),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))  
+    axis.title.y = element_text(colour = "#666666", size = 10),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_loc_type$Location_Type))))
 
-# Display the bar chart 
-plot_state_loc_type
+# Display heatmap of shootings per state and location type
+heatmap_state_loc_type
 
 ```
 
@@ -1054,6 +1061,27 @@ colnames(shootings_per_state_prior) <- c("State", "Prior_Signs_Of_Mental_Health_
 # Display the bar chart 
 plot_state_prior
 
+# Create a heatmap showing the number of mass shootings per state and whether there were prior signs of mental health issues
+heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Mental_Health_Issues, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#edbbd7", high = colour_palette[50])+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 5) +
+  labs(x = "Prior Signs of Mental Health Issues", fill = "Number of Shootings")+
+  theme(
+    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 10),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_prior$Prior_Signs_Of_Mental_Health_Issues))))
+
+# Display heatmap of shootings per state and whether there were prior signs of mental health issues
+heatmap_state_prior
+
+
 ```  
 
 ## State & Age Bracket
@@ -1068,23 +1096,25 @@ colnames(shootings_per_state_age) <- c("State", "Age_Bracket", "Num_Shootings")
 
 ```{r display_plot_state_age, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by state and age bracket
- plot_state_age <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Age_Bracket), data = shootings_per_state_age, stat = "identity", position = "fill") +
-  scale_fill_manual(values = c(colour_palette[20],colour_palette[40], colour_palette[55], colour_palette[65], colour_palette[75], colour_palette[90], colour_palette[100])) +
-  labs(x = "State",
-       y = "% of mass shootings",
-       fill = "Age Bracket") +
+# Create a heatmap showing the number of mass shootings per state and age bracket
+heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#d4aee5", high = colour_palette[30])+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 5) +
+  labs(x = "Age Bracket", fill = "Number of Shootings")+
   theme(
-    axis.text.y = element_text(colour = "#666666", size = 7.5),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
+    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))  
+    axis.title.y = element_text(colour = "#666666", size = 10),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() #+
+ # scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_age$Age_Bracket))))
 
-# Display the bar chart 
-plot_state_age
+# Display heatmap of shootings per state and age bracket
+heatmap_state_age
 
 ```
 
