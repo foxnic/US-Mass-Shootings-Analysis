@@ -196,7 +196,7 @@ colnames(victims_by_state) <- c("state", "victims")
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE) +
   scale_fill_continuous(low = colour_palette[55], high = colour_palette[20], na.value = "white", name = "victims") +
-  theme(legend.position = "right", plot.margin=unit(c(1.5,0,1.5,0),"cm"))
+  theme(legend.position = "right", plot.margin=unit(c(1,0,1,0),"cm"))
   
 
 # Display the map chart
@@ -283,7 +283,7 @@ my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1
     panel.background = element_blank(), # Remove the grey background
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"), # Add the minor grid lines back in
-    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
+    plot.margin=unit(c(1,0,1,0),"cm"))+
   geom_smooth(method = "loess", colour = "#666666", linetype = 2, size = 0.5 )+
   coord_cartesian(ylim=c(0,15))
 
@@ -321,7 +321,7 @@ animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shoo
         panel.background = element_blank(), # Remove the grey background
         panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
         panel.grid.minor = element_line(colour = "#e0e0e0"), # Add the minor grid lines back in)
-        plot.margin=unit(c(1.5,0,1.5,0),"cm"))+ 
+        plot.margin=unit(c(1,0,1,0),"cm"))+ 
   # The gganimate specific bits:
   labs(title = "Year: {frame_time}", x = "", y = "Shootings") +
   transition_time(year) +
@@ -391,7 +391,7 @@ timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
     axis.ticks = element_blank(),
     axis.title = element_blank(),
     panel.background = element_blank(),
-    plot.margin=unit(c(1.5,0,1.5,0),"cm")) +
+    plot.margin=unit(c(1,0,1,0),"cm")) +
     coord_cartesian(ylim=c(-0.1,0.1))+
   geom_label(aes(x = as.Date("2018-03-01"), y = 0.06, label = "Thousand Oaks nightclub shooting\n7th Nov 2018.\n34 victims."), 
              hjust = 0, vjust = 0.5, lineheight = 0.8,
@@ -477,7 +477,7 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
     axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
-    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
+    plot.margin=unit(c(1,0,1,0),"cm"))+
   scale_y_discrete(position = "right", 
                    # Re-order the states so "AR"" is at the top rather than the bottom of the y axis
                    limits = rev(levels(as.factor(shootings_per_decade_state$state))))
@@ -521,7 +521,7 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
     axis.title.x = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
+    plot.margin=unit(c(1,0,1,0),"cm"))+
     coord_cartesian(ylim=c(0,70))
 
 # Display the chart
@@ -616,7 +616,7 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
     axis.title.x = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1.5,0,1.5,0),"cm"))+
+    plot.margin=unit(c(1,0,1,0),"cm"))+
     coord_cartesian(ylim=c(0,50))
 
 # Display the chart
@@ -654,7 +654,7 @@ plot_age <- ggplot(shootings_per_age, aes(y=shootings, x=age_of_shooter)) +
     axis.title.x = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1.5,0,1.5,0),"cm")) +
+    plot.margin=unit(c(1,0,1,0),"cm")) +
     coord_cartesian(ylim=c(0,8))
 
 # Display the bar chart 
@@ -707,7 +707,7 @@ plot_age_bracket <- ggplot(shootings_per_age_bracket, aes(y=shootings, x=age_bra
     axis.title.x = element_blank(), 
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1.5,0,1.5,0),"cm")) +
+    plot.margin=unit(c(1,0,1,0),"cm")) +
     coord_cartesian(ylim=c(0,40))
 
 # Display the bar chart 
@@ -743,7 +743,8 @@ faceted_line_graph_year_age <- ggplot(data=without_child_age_bracket, aes(x=Year
         axis.title = element_text(size = 18, colour = "#666666"),
         panel.background = element_blank(), # Remove the grey background
         panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
-        panel.grid.minor = element_line(colour = "#e0e0e0"))+ # Add the minor grid lines back in)
+        panel.grid.minor = element_line(colour = "#e0e0e0"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+ # Add the minor grid lines back in)
   facet_wrap(~Age_Bracket)
 
 # Display the faceted line graph
@@ -781,7 +782,7 @@ shootings_per_semi$percentage <- round(shootings_per_semi$shootings / sum(shooti
 ```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=2}
 
 # Create a waffle chart
-semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= colour_palette[20], 'No'=colour_palette[96]))
+semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= colour_palette[70], 'No'=colour_palette[95]))
 
 # Display the waffle chart
 semi_auto_waffle
@@ -829,7 +830,7 @@ shootings_per_multiple$percentage <- round(shootings_per_multiple$shootings / su
 ```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
 
 # Create a waffle chart
-multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[40], 'No'=colour_palette[70]))
+multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[20], 'No'=colour_palette[55]))
 
 # Display the waffle chart
 multiple_weapons_waffle
@@ -837,6 +838,95 @@ multiple_weapons_waffle
 
 Just **over half** (53%) of mass shootings involved **multiple weapons**.
 
+## State & Semi-Automatic Weapons
+
+```{r create_state_semi_summary, include=FALSE}
+# Create a new data frame that shows number by state and whether semi-automatic weapons were used
+shootings_per_state_semi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$semi_auto_used),FUN = sum)
+
+# Change the column heading names to State, Semi_Auto_Weapons_Used, and Num_Shootings
+colnames(shootings_per_state_semi) <- c("State", "Semi_Auto_Weapons_Used", "Num_Shootings")
+
+# Change the Num_Shootings values for "No" to negative numbers, so values for "No" are on the bottom and values for "Yes" are on the top
+shootings_per_state_semi$Num_Shootings = case_when(
+   shootings_per_state_semi$Semi_Auto_Weapons_Used == "No" ~ -shootings_per_state_semi$Num_Shootings,
+   shootings_per_state_semi$Semi_Auto_Weapons_Used == "Yes" ~ shootings_per_state_semi$Num_Shootings
+)
+```
+
+```{r display_plot_state_semi, echo=FALSE, fig.width=10, fig.height=5}
+
+brks <- seq(-16, 16, 2) # X Axis Breaks
+lbls = as.character(c(seq(16, 0, -2), seq(2, 16, 2))) # X Axis Labels
+
+# Create a bar chart using ggplot2 to show shootings by state and whether semi-automatic weapons were used
+ plot_state_semi <- ggplot() + 
+  geom_bar(aes(y=Num_Shootings, x=State, fill=Semi_Auto_Weapons_Used), 
+           data = shootings_per_state_semi, 
+           stat = "identity") +
+   scale_y_continuous(breaks = brks,   # Breaks
+                     labels = lbls) + # Labels
+   scale_fill_manual(values = c(colour_palette[95], colour_palette[50])) +
+   labs(x = "State",
+       y = "Number of mass shootings",
+       fill = "Semi-Auto Weapons Used?") +
+   theme(
+    axis.text.y = element_text(colour = "#666666", size = 14),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.title = element_text(colour = "#666666", size = 14),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+   guides(fill = guide_legend(reverse = TRUE))
+
+# Display the bar chart 
+plot_state_semi
+```
+  
+  
+## State & Multiple Weapons
+
+```{r create_state_multi_summary, include=FALSE}
+# Create a new data frame that shows number by state and whether multiple weapons were used
+shootings_per_state_multi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$multiple_weapons_used),FUN = sum)
+
+# Change the column heading names to State, Multiple_Weapons_Used, and Num_Shootings
+colnames(shootings_per_state_multi) <- c("State", "Multiple_Weapons_Used", "Num_Shootings")
+
+# Change the Num_Shootings values for "No" to negative numbers, so values for "No" are on the bottom and values for "Yes" are on the top
+shootings_per_state_multi$Num_Shootings = case_when(
+   shootings_per_state_multi$Multiple_Weapons_Used == "No" ~ -shootings_per_state_multi$Num_Shootings,
+   shootings_per_state_multi$Multiple_Weapons_Used == "Yes" ~ shootings_per_state_multi$Num_Shootings
+)
+```
+
+```{r display_plot_state_multi, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by state and whether multiple weapons were used
+ plot_state_multi <- ggplot() + 
+  geom_bar(aes(y=Num_Shootings, x=State, fill=Multiple_Weapons_Used), data = shootings_per_state_multi, stat = "identity") +
+  scale_y_continuous(breaks = brks,   # Breaks
+                     labels = lbls) + # Labels
+  scale_fill_manual(values = c(colour_palette[65], colour_palette[25])) +
+  labs(x = "State",
+       y = "Number of mass shootings",
+       fill = "Multiple Weapons Used?") +
+  theme(
+    axis.text.y = element_text(colour = "#666666", size = 14),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.title = element_text(colour = "#666666", size = 14),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+   guides(fill = guide_legend(reverse = TRUE))
+
+# Display the bar chart 
+plot_state_multi
+
+```
+  
 ## State & Race
 
 ```{r create_state_race_summary, include=FALSE}
@@ -869,71 +959,6 @@ plot_state_race
 
 ```
 
-## State & Semi-Automatic Weapons
-
-```{r create_state_semi_summary, include=FALSE}
-# Create a new data frame that shows number by state and whether semi-automatic weapons were used
-shootings_per_state_semi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$semi_auto_used),FUN = sum)
-
-# Change the column heading names to State, Semi_Auto_Weapons_Used, and Num_Shootings
-colnames(shootings_per_state_semi) <- c("State", "Semi_Auto_Weapons_Used", "Num_Shootings")
-```
-
-```{r display_plot_state_semi, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by state and whether semi-automatic weapons were used
- plot_state_semi <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Semi_Auto_Weapons_Used), data = shootings_per_state_semi, stat = "identity") +
-  scale_fill_manual(values = c("#e14646", "#49a4aa")) +
-  labs(x = "State",
-       y = "Number of mass shootings") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
-
-# Display the bar chart 
-plot_state_semi
-
-```
-  
-  
-## State & Multiple Weapons
-
-```{r create_state_multi_summary, include=FALSE}
-# Create a new data frame that shows number by state and whether multiple weapons were used
-shootings_per_state_multi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$multiple_weapons_used),FUN = sum)
-
-# Change the column heading names to State, Multiple_Weapons_Used, and Num_Shootings
-colnames(shootings_per_state_multi) <- c("State", "Multiple_Weapons_Used", "Num_Shootings")
-```
-
-```{r display_plot_state_multi, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by state and whether multiple weapons were used
- plot_state_multi <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Multiple_Weapons_Used), data = shootings_per_state_multi, stat = "identity") +
-  scale_fill_manual(values = c("#e14646", "#49a4aa")) +
-  labs(x = "State",
-       y = "Number of mass shootings") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 7.5),
-    axis.ticks = element_blank(),
-    title = element_text(colour = "#666666"),
-    plot.title = element_text(hjust = 0.5),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666")) 
-
-# Display the bar chart 
-plot_state_multi
-
-```
-  
 ## State & Weapons Obtained Legally
 
 ```{r create_state_legally_summary, include=FALSE}
