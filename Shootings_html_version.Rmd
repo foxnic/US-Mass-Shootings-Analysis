@@ -199,7 +199,8 @@ plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims"
   scale_fill_continuous(low = colour_palette[55], high = colour_palette[20], na.value = "white", name = "victims") +
   theme(
     legend.position = "top", 
-    legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75), 
+    legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     plot.margin=unit(c(1,0,1,0),"cm"))
   
 
@@ -229,7 +230,8 @@ colnames(shootings_per_state) <- c("state", "shootings")
 treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, label = state)) +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 16))+
+    legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16))+
   geom_treemap(aes(alpha = shootings), fill = colour_palette[20]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -417,6 +419,7 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 12),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
@@ -494,7 +497,8 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 treemap_prior_shootings <- ggplot(shootings_per_prior, aes(area = shootings, label = prior_signs_of_MH_issues)) +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 16))+
+    legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16))+
   geom_treemap(aes(alpha = shootings), fill = "#e1ad46") +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -523,7 +527,8 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 16))+
+    legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16))+
   geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -825,6 +830,7 @@ lbls = as.character(c(seq(16, 0, -2), seq(2, 16, 2))) # X Axis Labels
    theme(
      legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16),
+     legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -869,6 +875,7 @@ shootings_per_state_multi$Num_Shootings = case_when(
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -905,6 +912,7 @@ heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) +
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -941,6 +949,7 @@ heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtaine
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -978,6 +987,7 @@ heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -1015,6 +1025,7 @@ colnames(shootings_per_state_prior) <- c("State", "Prior_Signs_Of_Mental_Health_
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1035,6 +1046,7 @@ heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Ment
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -1072,6 +1084,7 @@ heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) +
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -1109,6 +1122,7 @@ bubble_decade_semi <- ggplot(shootings_per_decade_semi, aes(x=Decade, y=Num_Shoo
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 16),
@@ -1149,6 +1163,7 @@ bubble_decade_multi <- ggplot(shootings_per_decade_multi, aes(x=Decade, y=Num_Sh
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 16),
@@ -1189,6 +1204,7 @@ bubble_decade_prior <- ggplot(shootings_per_decade_prior, aes(x=Decade, y=Num_Sh
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 16),
@@ -1228,6 +1244,7 @@ bubble_decade_legally <- ggplot(shootings_per_decade_legally, aes(x=Decade, y=Nu
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 16),
@@ -1267,6 +1284,7 @@ bubble_decade_loc_type <- ggplot(shootings_per_decade_loc_type, aes(x=Decade, y=
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 16),
@@ -1306,6 +1324,7 @@ colnames(shootings_per_semi_prior) <- c("Semi_Auto_Used", "Prior_Signs_Of_Mental
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1341,6 +1360,7 @@ colnames(shootings_per_multi_prior) <- c("Multiple_Weapons_Used", "Prior_Signs_O
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1376,6 +1396,7 @@ colnames(shootings_per_multi_semi) <- c("Multiple_Weapons_Used", "Semi_Auto_Used
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1411,6 +1432,7 @@ colnames(shootings_per_semi_age) <- c("Semi_Auto_Used", "Age_Bracket", "Num_Shoo
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1446,6 +1468,7 @@ colnames(shootings_per_legally_age) <- c("Weapons_Obtained_Legally", "Age_Bracke
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1481,6 +1504,7 @@ colnames(shootings_per_multi_age) <- c("Multiple_Weapons_Used", "Age_Bracket", "
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1516,6 +1540,7 @@ colnames(shootings_per_multi_legally) <- c("Multiple_Weapons_Used", "Weapons_Obt
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1551,6 +1576,7 @@ colnames(shootings_per_semi_legally) <- c("Semi_Auto_Used", "Weapons_Obtained_Le
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1586,6 +1612,7 @@ colnames(shootings_per_age_prior) <- c("Age_Bracket", "Prior_Signs_Of_Mental_Hea
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1621,6 +1648,7 @@ colnames(shootings_per_loc_type_prior) <- c("Location_Type", "Prior_Signs_Of_Men
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1656,6 +1684,7 @@ colnames(shootings_per_legally_prior) <- c("Weapons_Obtained_Legally", "Prior_Si
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1691,6 +1720,7 @@ colnames(shootings_per_loc_type_age) <- c("Location_Type", "Age_Bracket", "Num_S
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1726,6 +1756,7 @@ colnames(shootings_per_loc_type_semi) <- c("Location_Type", "Semi_Auto_Used", "N
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1761,6 +1792,7 @@ colnames(shootings_per_loc_type_multi) <- c("Location_Type", "Multiple_Weapons_U
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1796,6 +1828,7 @@ colnames(shootings_per_loc_type_race) <- c("Location_Type", "Race", "Num_Shootin
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
@@ -1831,6 +1864,7 @@ colnames(shootings_per_age_race) <- c("Age_Bracket", "Race", "Num_Shootings")
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
