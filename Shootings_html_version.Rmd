@@ -171,7 +171,9 @@ cleansed_data$international_date <- as.Date(cleansed_data$international_date)
 
 # Data
 
-This analysis is based on data on US mass shootings 1982 - 2019 provided by Mother Jones.  
+This analysis is based on data on US mass shootings 1982 - 2019 provided by Mother Jones.
+
+> ["Our research focused on indiscriminate rampages in public places resulting in four or more victims killed by the attacker. We exclude shootings stemming from more conventionally motivated crimes such as armed robbery or gang violence."](https://www.motherjones.com/politics/2012/07/mass-shootings-map/)
 
 The download is available at:  
 
@@ -191,7 +193,7 @@ colnames(victims_by_state) <- c("state", "victims")
 ```
 
 
-```{r display_plot_state_victims, echo=FALSE, fig.width=12, fig.height=7}
+```{r display_plot_state_victims, echo=FALSE, fig.width=8, fig.height=7}
 
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE, label_color = "white") +
@@ -337,8 +339,13 @@ animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shoo
   exit_shrink()
 
 # Display the animated plot and set the duration
-animate(animated_plot, duration = 20)
+animated_shootings_gif <- animate(animated_plot, duration = 20)
 
+# Display the animated plot
+animated_shootings_gif
+
+# Save the animation as a gif
+# anim_save('animated_shootings.gif', animation = animated_shootings_gif) # This saves a file but its a bunch of static frames rather than an animated gif. Need to look into this.
 
 ```
 
