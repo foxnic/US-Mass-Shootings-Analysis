@@ -200,7 +200,7 @@ plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims"
   theme(
     legend.position = "top", 
     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 8),
     plot.margin=unit(c(1,0,1,0),"cm"))
   
 
@@ -419,7 +419,7 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 10),
     axis.text.y = element_text(colour = "#666666", size = 12),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
@@ -912,7 +912,7 @@ heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) +
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 8),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -949,7 +949,7 @@ heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtaine
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 8),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -987,7 +987,7 @@ heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 8),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -1046,7 +1046,7 @@ heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Ment
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 8),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
@@ -1084,7 +1084,7 @@ heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) +
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 8),
     axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
