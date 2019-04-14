@@ -191,7 +191,7 @@ colnames(victims_by_state) <- c("state", "victims")
 ```
 
 
-```{r display_plot_state_victims, echo=FALSE, fig.width=10, fig.height=7}
+```{r display_plot_state_victims, echo=FALSE, fig.width=12, fig.height=7}
 
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE, label_color = "white") +
@@ -226,6 +226,9 @@ colnames(shootings_per_state) <- c("state", "shootings")
 
 # Create a treemap chart of the shootings per state
 treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, label = state)) +
+  theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 14))+
   geom_treemap(aes(alpha = shootings), fill = colour_palette[20]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -395,6 +398,9 @@ timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
              alpha = 0.7,
              fill = "#e27f46")+
   theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 14),
+    legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_blank(),
     axis.text.x = element_blank(),
     axis.ticks = element_blank(),
@@ -480,6 +486,8 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
   geom_tile(aes(fill = shootings), colour = "white") + 
   scale_fill_gradient(low = colour_palette[50], high = colour_palette[20])+
   theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 14),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
@@ -555,6 +563,9 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 
 # Create a treemap chart 
 treemap_prior_shootings <- ggplot(shootings_per_prior, aes(area = shootings, label = prior_signs_of_MH_issues)) +
+  theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 14))+
   geom_treemap(aes(alpha = shootings), fill = "#e1ad46") +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -581,6 +592,9 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 
 # Create a treemap chart for shootings involving legal and illegal weapons
 treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
+  theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 14))+
   geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
