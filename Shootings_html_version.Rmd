@@ -1,6 +1,6 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
-date: 12/04/2019
+date: 14/04/2019
 author: Nic Fox
 output: 
   html_document:
@@ -302,6 +302,51 @@ The number of mass shootings per year in the US is **increasing**.
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
 
+## Shootings Per State Over Time
+
+```{r create_year_state_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per year per state
+shootings_per_year_state <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$state),FUN = sum)
+
+# Change the column heading names to "year", "state", "shootings"
+colnames(shootings_per_year_state) <- c("year", "state", "shootings")
+
+```
+
+
+```{r animated_plot, echo=FALSE, fig.height=7, fig.width=10}
+
+animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shootings, fill = state)) +
+  geom_col()+
+  scale_fill_viridis_d(aesthetics = "fill", option = "A", direction = 1, begin = 0.2, end = 1)+
+  theme(legend.position = "none",
+        axis.ticks = element_blank(),
+        axis.text = element_text(colour = "#666666", size = 8, angle = 90, vjust = 0.5),
+        axis.title = element_text(colour = "#666666", size = 16),
+        plot.title = element_text(colour = "#666666", size = 18),
+        panel.background = element_blank(), # Remove the grey background
+        panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
+        panel.grid.minor = element_line(colour = "#e0e0e0"), # Add the minor grid lines back in)
+        plot.margin=unit(c(1,0,1,0),"cm"))+ 
+  # The gganimate specific bits:
+  labs(title = "Year: {frame_time}", x = "", y = "Number of Mass Shootings") +
+  transition_time(year) +
+  ease_aes('linear')+
+  enter_grow()+
+  exit_shrink()
+
+# Display the animated plot and set the duration
+animated_shootings_gif <- animate(animated_plot, duration = 20)
+
+# Display the animated plot
+animated_shootings_gif
+
+# Save the animation as a gif
+# anim_save('animated_shootings.gif', animation = animated_shootings_gif) # This saves a file but its a bunch of static frames rather than an animated gif. Need to look into this.
+
+```
+
 ## Shootings By Decade
 
 ```{r create_decade_column, include=FALSE}
@@ -352,52 +397,6 @@ plot_decade
 
 The number of mass shootings this decade is almost **triple** the number in the previous decade.
 
-## Shootings Per State Over Time
-
-```{r create_year_state_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings per year per state
-shootings_per_year_state <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$state),FUN = sum)
-
-# Change the column heading names to "year", "state", "shootings"
-colnames(shootings_per_year_state) <- c("year", "state", "shootings")
-
-```
-
-
-```{r animated_plot, echo=FALSE, fig.height=7, fig.width=10}
-
-animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shootings, fill = state)) +
-  geom_col()+
-  scale_fill_viridis_d(aesthetics = "fill", option = "A", direction = 1, begin = 0.2, end = 1)+
-  theme(legend.position = "none",
-        axis.ticks = element_blank(),
-        axis.text = element_text(colour = "#666666", size = 8, angle = 90, vjust = 0.5),
-        axis.title = element_text(colour = "#666666", size = 16),
-        plot.title = element_text(colour = "#666666", size = 18),
-        panel.background = element_blank(), # Remove the grey background
-        panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
-        panel.grid.minor = element_line(colour = "#e0e0e0"), # Add the minor grid lines back in)
-        plot.margin=unit(c(1,0,1,0),"cm"))+ 
-  # The gganimate specific bits:
-  labs(title = "Year: {frame_time}", x = "", y = "Number of Mass Shootings") +
-  transition_time(year) +
-  ease_aes('linear')+
-  enter_grow()+
-  exit_shrink()
-
-# Display the animated plot and set the duration
-animated_shootings_gif <- animate(animated_plot, duration = 20)
-
-# Display the animated plot
-animated_shootings_gif
-
-# Save the animation as a gif
-# anim_save('animated_shootings.gif', animation = animated_shootings_gif) # This saves a file but its a bunch of static frames rather than an animated gif. Need to look into this.
-
-```
-
-
 ## Shootings By Decade & State
 
 ```{r create_decade_state_summary, include=FALSE}
@@ -418,7 +417,7 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.y = element_text(colour = "#666666", size = 12),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 18),
