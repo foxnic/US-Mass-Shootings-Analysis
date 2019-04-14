@@ -199,7 +199,7 @@ plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims"
   scale_fill_continuous(low = colour_palette[55], high = colour_palette[20], na.value = "white", name = "victims") +
   theme(
     legend.position = "top", 
-    legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75), 
+    legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75), 
     plot.margin=unit(c(1,0,1,0),"cm"))
   
 
@@ -229,7 +229,7 @@ colnames(shootings_per_state) <- c("state", "shootings")
 treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, label = state)) +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14))+
+    legend.title = element_text(colour = "#666666", size = 16))+
   geom_treemap(aes(alpha = shootings), fill = colour_palette[20]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -284,8 +284,6 @@ my_line_plot <- ggplot(data=shootings_per_year, aes(x=year, y=shootings, group=1
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
-    title = element_text(colour = "#666666"),
-    plot.title = element_text(hjust = 0.5),
     axis.line.x = element_line(colour = "#666666"),
     axis.line.y = element_line(colour = "#666666"),
     panel.background = element_blank(), # Remove the grey background
@@ -352,6 +350,8 @@ plot_decade
 
 ```
 
+The number of mass shootings this decade is almost **triple** the number in the previous decade.
+
 ## Shootings Per State Over Time
 
 ```{r create_year_state_summary, include=FALSE}
@@ -373,7 +373,7 @@ animated_plot <- ggplot(data = shootings_per_year_state, aes(x = state, y = shoo
   theme(legend.position = "none",
         axis.ticks = element_blank(),
         axis.text = element_text(colour = "#666666", size = 8, angle = 90, vjust = 0.5),
-        axis.title = element_text(colour = "#666666", size = 14),
+        axis.title = element_text(colour = "#666666", size = 16),
         plot.title = element_text(colour = "#666666", size = 18),
         panel.background = element_blank(), # Remove the grey background
         panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
@@ -398,118 +398,6 @@ animated_shootings_gif
 ```
 
 
-## Timeline 2016-2019
-
-```{r create_timeline_summary, include=FALSE}
-
-# Create a new data frame containing only the shootings in 2016-2019
-cleansed_data_timeline <- data.frame(cleansed_data[cleansed_data$year > "2015" ,c("case", "international_date", "total_victims")])
-
-# Create a new data frame that shows number of victims per date 
-victims_per_date <- aggregate(cleansed_data_timeline$total_victims, by=list(cleansed_data_timeline$international_date),FUN = sum)
-
-# Change the column heading names to "date" and "victims"
-colnames(victims_per_date) <- c("date", "victims")
-
-# Sort the data by date
-victims_per_date <- victims_per_date[order(as.Date(victims_per_date$date, format="%Y/%m/%d")),]
-
-# Create a new data frame containing the rows in victims_per_date plus rows with 0 victims for all the dates on which there were no mass shootings. Start by creating a list of all the dates between the 1st shooting and the latest.
-earliest_shooting <- as.Date(min(victims_per_date$date))
-most_recent_shooting <- as.Date(max(victims_per_date$date))
-date_range <- as.data.frame(seq(earliest_shooting, most_recent_shooting, by=1))
-
-# Change the column heading name to "date"
-colnames(date_range) <- "date"
-
-# Add a victims column with all values set to zero
-date_range$victims <- 0
-
-victims_per_date <- right_join(victims_per_date, date_range, by = c("date"="date"))
-
-# Change the column heading names to date, victims, temp_victims
-colnames(victims_per_date) <- c("date", "victims", "temp_victims")
-
-# If victims is NA then set it to zero
-victims_per_date[is.na(victims_per_date$victims), c("victims")] <- 0
-
-# Remove the temp_victims column
-victims_per_date <- victims_per_date[, c("date", "victims")]
-
-# Change zeros to NA so a point isn't displayed on the plot for dates with no shootings
-victims_per_date[victims_per_date$victims == 0, "victims"] <- NA
-
-```
-
-```{r display_timeline, echo=FALSE, fig.height=3, fig.width=10, message=FALSE, warning=FALSE}
-
-# Create a single time line with bubbles representing victims by date for shootings between 2016 and 2019
-
-timeline_chart <- ggplot(data = victims_per_date, aes(x = date, y = 0)) +
-  geom_hline(yintercept = 0, linetype = "solid", color = "gray", size = 0.75)+
-  geom_point(aes(size = victims),
-             shape = 21,
-             colour = "#dd5202",
-             alpha = 0.7,
-             fill = "#e27f46")+
-  theme(
-    legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
-    legend.key = element_rect(fill = NA, colour = NA),
-    axis.text.y = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks = element_blank(),
-    axis.title = element_blank(),
-    panel.background = element_blank(),
-    plot.margin=unit(c(1,0,1,0),"cm")) +
-    coord_cartesian(ylim=c(-0.1,0.1))+
-  geom_label(aes(x = as.Date("2018-03-01"), y = 0.06, label = "Thousand Oaks nightclub shooting\n7th Nov 2018.\n34 victims."), 
-             hjust = 0, vjust = 0.5, lineheight = 0.8,
-             colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2018-11-07"), y = 0.007, xend = as.Date("2018-10-15"), yend = 0.0375), 
-               colour = "#dd5202", size=0.5)+
-  geom_label(aes(x = as.Date("2017-08-10"), y = 0.06, label = "Texas First Baptist\nChurch massacre\n5th Nov 2017.\n46 victims."), 
-             hjust = 0, vjust = 0.5, lineheight = 0.8,
-             colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2017-11-05"), y = 0.007, xend = as.Date("2017-11-30"), yend = 0.0375), 
-               colour = "#dd5202", size=0.5)+
-  geom_label(aes(x = as.Date("2016-11-01"), y = 0.06, label = "Las Vegas Strip massacre\n1st Oct 2017.\n604 victims."), 
-             hjust = 0, vjust = 0.5, lineheight = 0.8,
-             colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2017-10-01"), y = 0.007, xend = as.Date("2017-07-15"), yend = 0.0375), 
-               colour = "#dd5202", size=0.5)+
-  geom_label(aes(x = as.Date("2016-01-10"), y = 0.06, label = "Orlando nightclub massacre\n12th June 2016.\n102 victims."), 
-             hjust = 0, vjust = 0.5, lineheight = 0.8,
-             colour = "#FFFFFF", fill = "#dd5202", label.size = NA, family="Helvetica", size = 4)+ 
-  geom_segment(aes(x = as.Date("2016-06-12"), y = 0.007, xend = as.Date("2016-03-30"), yend = 0.0375), 
-               colour = "#dd5202", size=0.5)+
-    geom_label(aes(x = as.Date("2016-06-06"), y = -0.05, label = "2016"), 
-             hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
-  geom_segment(aes(x = as.Date("2016-01-01"), y = 0.03, xend = as.Date("2016-01-01"), yend = -0.03), 
-               colour = "gray", size=0.5)+
-    geom_label(aes(x = as.Date("2017-06-06"), y = -0.05, label = "2017"), 
-             hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
-  geom_segment(aes(x = as.Date("2017-01-01"), y = 0.03, xend = as.Date("2017-01-01"), yend = -0.03), 
-               colour = "gray", size=0.5)+
-    geom_label(aes(x = as.Date("2018-06-06"), y = -0.05, label = "2018"), 
-             hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
-  geom_segment(aes(x = as.Date("2018-01-01"), y = 0.03, xend = as.Date("2018-01-01"), yend = -0.03), 
-               colour = "gray", size=0.5)+
-    geom_label(aes(x = as.Date("2019-01-30"), y = -0.05, label = "2019"), 
-             hjust = 0, vjust = -0.5, lineheight = 0.8,
-             colour = "#666666", fill = "white", label.size = NA, family="Helvetica", size = 5)+ 
-  geom_segment(aes(x = as.Date("2019-01-01"), y = 0.03, xend = as.Date("2019-01-01"), yend = -0.03), 
-               colour = "gray", size=0.5)
-
-# Display the timeline chart
-timeline_chart
-
-```  
-
-
 ## Shootings By Decade & State
 
 ```{r create_decade_state_summary, include=FALSE}
@@ -529,8 +417,8 @@ heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) +
   scale_fill_gradient(low = colour_palette[50], high = colour_palette[20])+
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 18),
@@ -607,7 +495,7 @@ colnames(shootings_per_prior) <- c("prior_signs_of_MH_issues", "shootings")
 treemap_prior_shootings <- ggplot(shootings_per_prior, aes(area = shootings, label = prior_signs_of_MH_issues)) +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14))+
+    legend.title = element_text(colour = "#666666", size = 16))+
   geom_treemap(aes(alpha = shootings), fill = "#e1ad46") +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -636,7 +524,7 @@ colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14))+
+    legend.title = element_text(colour = "#666666", size = 16))+
   geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
@@ -937,10 +825,10 @@ lbls = as.character(c(seq(16, 0, -2), seq(2, 16, 2))) # X Axis Labels
        fill = "Semi-Auto Weapons Used?") +
    theme(
      legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14),
-    axis.text.y = element_text(colour = "#666666", size = 14),
+     legend.title = element_text(colour = "#666666", size = 16),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -981,10 +869,10 @@ shootings_per_state_multi$Num_Shootings = case_when(
        fill = "Multiple Weapons Used?") +
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14),
-    axis.text.y = element_text(colour = "#666666", size = 14),
+     legend.title = element_text(colour = "#666666", size = 16),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1017,11 +905,11 @@ heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) +
   labs(fill = "Number of Shootings")+
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 14),
+    axis.title.y = element_text(colour = "#666666", size = 16),
     axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
     plot.margin=unit(c(1,0,1,0),"cm"))+
@@ -1053,11 +941,11 @@ heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtaine
   labs(x = "Weapons Obtained Legally?", fill = "Number of Shootings")+
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 14),
+    axis.title.y = element_text(colour = "#666666", size = 16),
     axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
     plot.margin=unit(c(1,0,1,0),"cm"))+
@@ -1090,11 +978,11 @@ heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type
   labs(x = "Location Type", fill = "Number of Shootings")+
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 14),
+    axis.title.y = element_text(colour = "#666666", size = 16),
     axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
     plot.margin=unit(c(1,0,1,0),"cm"))+
@@ -1127,10 +1015,10 @@ colnames(shootings_per_state_prior) <- c("State", "Prior_Signs_Of_Mental_Health_
        fill = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 7.5),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1147,11 +1035,11 @@ heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Ment
   labs(x = "Prior Signs of Mental Health Issues", fill = "Number of Shootings")+
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 14),
+    axis.title.y = element_text(colour = "#666666", size = 16),
     axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
     plot.margin=unit(c(1,0,1,0),"cm"))+
@@ -1184,16 +1072,15 @@ heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) +
   labs(x = "Age Bracket", fill = "Number of Shootings")+
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 14, vjust = 0.75),
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 14),
+    axis.title.y = element_text(colour = "#666666", size = 16),
     axis.title.x = element_blank(),
     panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
     plot.margin=unit(c(1,0,1,0),"cm"))+
-  coord_flip() #+
- # scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_age$Age_Bracket))))
+  coord_flip() 
 
 # Display heatmap of shootings per state and age bracket
 heatmap_state_age
@@ -1222,11 +1109,11 @@ bubble_year_semi <- ggplot(shootings_per_year_semi, aes(x=Year, y=Num_Shootings,
        colour = "Semi-Auto Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 10),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
@@ -1260,11 +1147,11 @@ bubble_year_multi <- ggplot(shootings_per_year_multi, aes(x=Year, y=Num_Shooting
        colour = "Multiple Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 10),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
@@ -1299,11 +1186,11 @@ bubble_year_prior <- ggplot(shootings_per_year_prior, aes(x=Year, y=Num_Shooting
        colour = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 10),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
@@ -1337,11 +1224,11 @@ bubble_year_legally <- ggplot(shootings_per_year_legally, aes(x=Year, y=Num_Shoo
        colour = "Weapons Obtained Legally?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 10),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
@@ -1375,11 +1262,11 @@ bubble_year_loc_type <- ggplot(shootings_per_year_loc_type, aes(x=Year, y=Num_Sh
        colour = "Location Type") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
     axis.text.y = element_text(colour = "#666666", size = 10),
     axis.text.x = element_text(colour = "#666666", size = 10),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
@@ -1413,10 +1300,10 @@ colnames(shootings_per_semi_prior) <- c("Semi_Auto_Used", "Prior_Signs_Of_Mental
        fill = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1448,10 +1335,10 @@ colnames(shootings_per_multi_prior) <- c("Multiple_Weapons_Used", "Prior_Signs_O
        fill = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1483,10 +1370,10 @@ colnames(shootings_per_multi_semi) <- c("Multiple_Weapons_Used", "Semi_Auto_Used
        fill = "Semi-Auto Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1518,10 +1405,10 @@ colnames(shootings_per_semi_age) <- c("Semi_Auto_Used", "Age_Bracket", "Num_Shoo
        fill = "Age Bracket") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1553,10 +1440,10 @@ colnames(shootings_per_legally_age) <- c("Weapons_Obtained_Legally", "Age_Bracke
        fill = "Weapons Obtained Legally?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1588,10 +1475,10 @@ colnames(shootings_per_multi_age) <- c("Multiple_Weapons_Used", "Age_Bracket", "
        fill = "Multiple Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1623,10 +1510,10 @@ colnames(shootings_per_multi_legally) <- c("Multiple_Weapons_Used", "Weapons_Obt
        fill = "Multiple Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1658,10 +1545,10 @@ colnames(shootings_per_semi_legally) <- c("Semi_Auto_Used", "Weapons_Obtained_Le
        fill = "Semi-Auto Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1693,10 +1580,10 @@ colnames(shootings_per_age_prior) <- c("Age_Bracket", "Prior_Signs_Of_Mental_Hea
        fill = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1728,10 +1615,10 @@ colnames(shootings_per_loc_type_prior) <- c("Location_Type", "Prior_Signs_Of_Men
        fill = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1763,10 +1650,10 @@ colnames(shootings_per_legally_prior) <- c("Weapons_Obtained_Legally", "Prior_Si
        fill = "Prior Signs of Mental Health Issues") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1798,10 +1685,10 @@ colnames(shootings_per_loc_type_age) <- c("Location_Type", "Age_Bracket", "Num_S
        fill = "Age Bracket") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1833,10 +1720,10 @@ colnames(shootings_per_loc_type_semi) <- c("Location_Type", "Semi_Auto_Used", "N
        fill = "Semi-Auto Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1868,10 +1755,10 @@ colnames(shootings_per_loc_type_multi) <- c("Location_Type", "Multiple_Weapons_U
        fill = "Multiple Weapons Used?") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1903,10 +1790,10 @@ colnames(shootings_per_loc_type_race) <- c("Location_Type", "Race", "Num_Shootin
        fill = "Race") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
@@ -1938,10 +1825,10 @@ colnames(shootings_per_age_race) <- c("Age_Bracket", "Race", "Num_Shootings")
        fill = "Race") +
   theme(
     legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 14),
+    legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
     axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.title = element_text(colour = "#666666", size = 14),
+    axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     axis.line.x = element_line(colour = "#666666"),
