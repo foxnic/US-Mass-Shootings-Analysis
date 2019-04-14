@@ -268,6 +268,7 @@ shootings_per_year <- data.frame(table(cleansed_data$year))
 colnames(shootings_per_year) <- c("year", "shootings")
 ```
 
+
 ```{r display_plot_year, echo=FALSE, fig.height=5, fig.width=10}
 
 # Create a line graph showing the number of mass shootings per year
@@ -302,6 +303,54 @@ my_line_plot
 The number of mass shootings per year in the US is **increasing**.  
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
+
+## Shootings By Decade
+
+```{r create_decade_column, include=FALSE}
+
+# Create a new column called decade and populate it with the decade of each shooting 
+
+cleansed_data$decade <- case_when(
+    cleansed_data$year < "1990" ~ "1980-1989",
+    cleansed_data$year > "1989" & cleansed_data$year < "2000" ~"1990-1999",
+    cleansed_data$year > "1999" & cleansed_data$year < "2010" ~"2000-2009",
+    cleansed_data$year > "2009" & cleansed_data$year < "2020" ~"2010-2019"
+)
+
+```
+
+```{r create_decade_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per decade
+shootings_per_decade <- data.frame(table(cleansed_data$decade))
+
+# Change the column heading names to "decade" and "shootings"
+colnames(shootings_per_decade) <- c("decade", "shootings")
+```
+
+```{r display_plot_decade, echo=FALSE, fig.height=5, fig.width=10}
+
+# Create a bar chart using ggplot2 to show shootings by decade
+plot_decade <- ggplot(shootings_per_decade, aes(y=shootings, x=decade)) + 
+  geom_bar(position="dodge", stat="identity", fill = colour_palette[47]) +
+  labs(x = "Decade",
+       y = "Number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 18),
+    axis.title.x = element_blank(), 
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm")) +
+    coord_cartesian(ylim=c(0,70))
+
+# Display the chart 
+plot_decade
+
+```
 
 ## Shootings Per State Over Time
 
@@ -462,19 +511,6 @@ timeline_chart
 
 
 ## Shootings By Decade & State
-
-```{r create_decade_column, include=FALSE}
-
-# Create a new column called decade and populate it with the decade of each shooting 
-
-cleansed_data$decade <- case_when(
-    cleansed_data$year < "1990" ~ "1980-1989",
-    cleansed_data$year > "1989" & cleansed_data$year < "2000" ~"1990-1999",
-    cleansed_data$year > "1999" & cleansed_data$year < "2010" ~"2000-2009",
-    cleansed_data$year > "2009" & cleansed_data$year < "2020" ~"2010-2019"
-)
-
-```
 
 ```{r create_decade_state_summary, include=FALSE}
 
