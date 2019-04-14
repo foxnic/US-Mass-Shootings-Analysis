@@ -805,8 +805,15 @@ lbls = as.character(c(seq(16, 0, -2), seq(2, 16, 2))) # X Axis Labels
 # Display the bar chart 
 plot_state_semi
 ```
-  
-  
+
+Of the 35 states that have had a mass shooting, 30 (**85%**) have had shootings involving semi-automatic weapons.  
+
+Only 5 states have not had any mass shootings with semi-automatic weapons.
+
+In the 3 states with the most mass shootings - California, Florida and Texas - more shootings have involved semi-automatic weapons than without.
+
+For 14 states (**40%** of the states that have had mass shootings), for example Connecticut, **all** their mass shootings have involved semi-automatic weapons. 
+
 ## State & Multiple Weapons
 
 ```{r create_state_multi_summary, include=FALSE}
@@ -851,7 +858,13 @@ shootings_per_state_multi$Num_Shootings = case_when(
 plot_state_multi
 
 ```
-  
+
+28 of the 35 states (**80%**) have had mass shootings involving multiple weapons.
+
+7 of the states have only had mass shootings involving a single weapon.
+
+In the state with the most mass shootings - **California** - **most** of the mass shootings involved multiple weapons.
+ 
 ## State & Race
 
 ```{r create_state_race_summary, include=FALSE}
@@ -889,6 +902,8 @@ heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) +
 heatmap_state_race
 
 ```
+
+
 
 ## State & Weapons Obtained Legally
 
@@ -1021,9 +1036,12 @@ heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Ment
 
 # Display heatmap of shootings per state and whether there were prior signs of mental health issues
 heatmap_state_prior
+```
 
+Most of the mass shooters had prior signs of mental health issues in most of the states.   
 
-```  
+Only 2 of the states (**5%**) have had more mass shootings with **no prior signs** of mental health issues.
+
 
 ## State & Age Bracket
 
@@ -1142,6 +1160,7 @@ bubble_decade_semi
 
 ```
 
+In every decade, more mass shootings have involved semi-automatic weapons than without.
 
 ## Decade & Multiple Weapons
 
