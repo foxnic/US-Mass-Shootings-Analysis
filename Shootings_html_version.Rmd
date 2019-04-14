@@ -905,7 +905,7 @@ heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) +
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 16),
@@ -941,7 +941,7 @@ heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtaine
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 16),
@@ -978,7 +978,7 @@ heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 16),
@@ -1015,7 +1015,7 @@ colnames(shootings_per_state_prior) <- c("State", "Prior_Signs_Of_Mental_Health_
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 7.5),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 7.5),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
@@ -1035,7 +1035,7 @@ heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Ment
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 16),
@@ -1072,7 +1072,7 @@ heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) +
   theme(
     legend.position = "top",
      legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    axis.text.y = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
     axis.text.x = element_text(colour = "#666666", size = 8),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 16),
@@ -1086,195 +1086,201 @@ heatmap_state_age
 
 ```
 
-## Year & Semi-Automatic Weapons
+## Decade & Semi-Automatic Weapons
 
-```{r create_year_semi_summary, include=FALSE}
-# Create a new data frame that shows number by year and whether semi-automatic weapons were used
-shootings_per_year_semi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$semi_auto_used),FUN = sum)
+```{r create_decade_semi_summary, include=FALSE}
+# Create a new data frame that shows number by decade and whether semi-automatic weapons were used
+shootings_per_decade_semi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$semi_auto_used),FUN = sum)
 
-# Change the column heading names to Year, Semi_Auto_Weapons_Used, and Num_Shootings
-colnames(shootings_per_year_semi) <- c("Year", "Semi_Auto_Weapons_Used", "Num_Shootings")
+# Change the column heading names to Decade, Semi_Auto_Weapons_Used, and Num_Shootings
+colnames(shootings_per_decade_semi) <- c("Decade", "Semi_Auto_Weapons_Used", "Num_Shootings")
 
 ```
 
-```{r display_plot_year_semi, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_decade_semi, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bubble chart
-bubble_year_semi <- ggplot(shootings_per_year_semi, aes(x=Year, y=Num_Shootings, color = Semi_Auto_Weapons_Used)) +
-  geom_point(alpha=0.9, size = 5)+
+bubble_decade_semi <- ggplot(shootings_per_decade_semi, aes(x=Decade, y=Num_Shootings, color = Semi_Auto_Weapons_Used)) +
+  geom_point(alpha=0.7, size = 10)+
   scale_colour_manual(values = c(colour_palette[70], colour_palette[90]))+
-  labs(x = "Year",
+  labs(x = "Decade",
        y = "Number of mass shootings",
        colour = "Semi-Auto Weapons Used?") +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
-    axis.text.y = element_text(colour = "#666666", size = 10),
-    axis.text.x = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_cartesian(ylim=c(0,40))
 
 # Display the bubble chart
-bubble_year_semi
+bubble_decade_semi
 
 ```
 
-## Year & Multiple Weapons
 
-```{r create_year_multi_summary, include=FALSE}
-# Create a new data frame that shows number by year and whether multiple weapons were used
-shootings_per_year_multi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$multiple_weapons_used),FUN = sum)
+## Decade & Multiple Weapons
 
-# Change the column heading names to Year, Multiple_Weapons_Used, and Num_Shootings
-colnames(shootings_per_year_multi) <- c("Year", "Multiple_Weapons_Used", "Num_Shootings")
+```{r create_decade_multi_summary, include=FALSE}
+# Create a new data frame that shows number by decade and whether multiple weapons were used
+shootings_per_decade_multi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$multiple_weapons_used),FUN = sum)
+
+# Change the column heading names to Decade, Multiple_Weapons_Used, and Num_Shootings
+colnames(shootings_per_decade_multi) <- c("Decade", "Multiple_Weapons_Used", "Num_Shootings")
 ```
 
-```{r display_plot_year_multi, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_decade_multi, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bubble chart
-bubble_year_multi <- ggplot(shootings_per_year_multi, aes(x=Year, y=Num_Shootings, color = Multiple_Weapons_Used)) +
-  geom_point(alpha=0.9, size = 5)+
+bubble_decade_multi <- ggplot(shootings_per_decade_multi, aes(x=Decade, y=Num_Shootings, color = Multiple_Weapons_Used)) +
+  geom_point(alpha=0.7, size = 10)+
   scale_colour_manual(values = c(colour_palette[25], colour_palette[55]))+
-  labs(x = "Year",
+  labs(x = "Decade",
        y = "Number of mass shootings",
        colour = "Multiple Weapons Used?") +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
-    axis.text.y = element_text(colour = "#666666", size = 10),
-    axis.text.x = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_cartesian(ylim=c(0,40))
 
 # Display the bubble chart
-bubble_year_multi
+bubble_decade_multi
 
 ```
 
 
-## Year & Prior Signs of Mental Health Issues
+## Decade & Prior Signs of Mental Health Issues
 
-```{r create_year_prior_summary, include=FALSE}
-# Create a new data frame that shows number by year and whether there were prior signs of mental health issues
-shootings_per_year_prior <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$prior_signs_mental_health_issues),FUN = sum)
+```{r create_decade_prior_summary, include=FALSE}
+# Create a new data frame that shows number by decade and whether there were prior signs of mental health issues
+shootings_per_decade_prior <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$prior_signs_mental_health_issues),FUN = sum)
 
-# Change the column heading names to Year, Prior_Signs_Of_Mental_Health_Issues, and Num_Shootings
-colnames(shootings_per_year_prior) <- c("Year", "Prior_Signs_Of_Mental_Health_Issues", "Num_Shootings")
+# Change the column heading names to Decade, Prior_Signs_Of_Mental_Health_Issues, and Num_Shootings
+colnames(shootings_per_decade_prior) <- c("Decade", "Prior_Signs_Of_Mental_Health_Issues", "Num_Shootings")
 ```
 
-```{r display_plot_year_prior, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_decade_prior, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bubble chart
-bubble_year_prior <- ggplot(shootings_per_year_prior, aes(x=Year, y=Num_Shootings, color = Prior_Signs_Of_Mental_Health_Issues)) +
-  geom_point(alpha=0.9, size = 5)+
+bubble_decade_prior <- ggplot(shootings_per_decade_prior, aes(x=Decade, y=Num_Shootings, color = Prior_Signs_Of_Mental_Health_Issues)) +
+  geom_point(alpha=0.7, size = 10)+
   scale_colour_manual(values = c(colour_palette[90], colour_palette[65], colour_palette[40]))+
-  labs(x = "Year",
+  labs(x = "Decade",
        y = "Number of mass shootings",
        colour = "Prior Signs of Mental Health Issues?") +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
-    axis.text.y = element_text(colour = "#666666", size = 10),
-    axis.text.x = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_cartesian(ylim=c(0,40))
 
 # Display the bubble chart
-bubble_year_prior
+bubble_decade_prior
 
 ```  
 
-## Year & Weapons Obtained Legally
+## Decade & Weapons Obtained Legally
 
-```{r create_year_legally_summary, include=FALSE}
-# Create a new data frame that shows number by year and whether weapons were obtained legally
-shootings_per_year_legally <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$weapons_obtained_legally),FUN = sum)
+```{r create_decade_legally_summary, include=FALSE}
+# Create a new data frame that shows number by decade and whether weapons were obtained legally
+shootings_per_decade_legally <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$weapons_obtained_legally),FUN = sum)
 
-# Change the column heading names to Year, Weapons_Obtained_Legally, and Num_Shootings
-colnames(shootings_per_year_legally) <- c("Year", "Weapons_Obtained_Legally", "Num_Shootings")
+# Change the column heading names to Decade, Weapons_Obtained_Legally, and Num_Shootings
+colnames(shootings_per_decade_legally) <- c("Decade", "Weapons_Obtained_Legally", "Num_Shootings")
 ```
 
-```{r display_plot_year_legally, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_decade_legally, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bubble chart
-bubble_year_legally <- ggplot(shootings_per_year_legally, aes(x=Year, y=Num_Shootings, color = Weapons_Obtained_Legally)) +
-  geom_point(alpha=0.9, size = 5)+
+bubble_decade_legally <- ggplot(shootings_per_decade_legally, aes(x=Decade, y=Num_Shootings, color = Weapons_Obtained_Legally)) +
+  geom_point(alpha=0.7, size = 10)+
   scale_colour_manual(values = c(colour_palette[20], colour_palette[55], colour_palette[80]))+
-  labs(x = "Year",
+  labs(x = "Decade",
        y = "Number of mass shootings",
        colour = "Weapons Obtained Legally?") +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
-    axis.text.y = element_text(colour = "#666666", size = 10),
-    axis.text.x = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_cartesian(ylim=c(0,50))
 
 # Display the bubble chart
-bubble_year_legally
+bubble_decade_legally
 
 ```  
 
-## Year & Location Type
+## Decade & Location Type
 
-```{r create_year_loc_type_summary, include=FALSE}
-# Create a new data frame that shows number by year and location type
-shootings_per_year_loc_type <- aggregate(cleansed_data$for_count, by=list(cleansed_data$year, cleansed_data$location.1),FUN = sum)
+```{r create_decade_loc_type_summary, include=FALSE}
+# Create a new data frame that shows number by decade and location type
+shootings_per_decade_loc_type <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$location.1),FUN = sum)
 
-# Change the column heading names to Year, Location_Type and Num_Shootings
-colnames(shootings_per_year_loc_type) <- c("Year", "Location_Type", "Num_Shootings")
+# Change the column heading names to Decade, Location_Type and Num_Shootings
+colnames(shootings_per_decade_loc_type) <- c("Decade", "Location_Type", "Num_Shootings")
 ```
 
-```{r display_plot_year_loc_type, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_decade_loc_type, echo=FALSE, fig.width=10, fig.height=5}
 
 # Create a bubble chart
-bubble_year_loc_type <- ggplot(shootings_per_year_loc_type, aes(x=Year, y=Num_Shootings, color = Location_Type)) +
-  geom_point(alpha=0.9, size = 5)+
+bubble_decade_loc_type <- ggplot(shootings_per_decade_loc_type, aes(x=Decade, y=Num_Shootings, color = Location_Type)) +
+  geom_point(alpha=0.7, size = 10)+
   scale_colour_manual(values = c(colour_palette[5],colour_palette[20], colour_palette[47], colour_palette[69], colour_palette[83], colour_palette[95]))+
-  labs(x = "Year",
+  labs(x = "Decade",
        y = "Number of mass shootings",
        colour = "Location Type") +
   theme(
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     legend.key = element_rect(fill = NA, colour = NA),
-    axis.text.y = element_text(colour = "#666666", size = 10),
-    axis.text.x = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_cartesian(ylim=c(0,40))
 
 # Display the bubble chart
-bubble_year_loc_type
+bubble_decade_loc_type
 
 ```
 
@@ -1686,7 +1692,7 @@ colnames(shootings_per_loc_type_age) <- c("Location_Type", "Age_Bracket", "Num_S
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 12),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
@@ -1721,7 +1727,7 @@ colnames(shootings_per_loc_type_semi) <- c("Location_Type", "Semi_Auto_Used", "N
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 12),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
@@ -1756,7 +1762,7 @@ colnames(shootings_per_loc_type_multi) <- c("Location_Type", "Multiple_Weapons_U
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 12),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
@@ -1791,7 +1797,7 @@ colnames(shootings_per_loc_type_race) <- c("Location_Type", "Race", "Num_Shootin
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 12),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
@@ -1826,7 +1832,7 @@ colnames(shootings_per_age_race) <- c("Age_Bracket", "Race", "Num_Shootings")
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 12),
+    axis.text.x = element_text(colour = "#666666", size = 16),
     axis.title = element_text(colour = "#666666", size = 16),
     axis.ticks = element_blank(),
     panel.background = element_blank(),
