@@ -1215,10 +1215,10 @@ colnames(shootings_per_year_multi) <- c("Year", "Multiple_Weapons_Used", "Num_Sh
 
 ```{r display_plot_year_multi, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by year and whether multiple weapons were used
- plot_year_multi <- ggplot(aes(y=Num_Shootings, x=Year, colour=Multiple_Weapons_Used), data = shootings_per_year_multi) + 
-  geom_line(size = 2, alpha = 0.9) +
-  scale_colour_manual(values = c(colour_palette[30], colour_palette[50])) +
+# Create a bubble chart
+bubble_year_multi <- ggplot(shootings_per_year_multi, aes(x=Year, y=Num_Shootings, color = Multiple_Weapons_Used)) +
+  geom_point(alpha=0.9, size = 5)+
+  scale_colour_manual(values = c(colour_palette[25], colour_palette[55]))+
   labs(x = "Year",
        y = "Number of mass shootings",
        colour = "Multiple Weapons Used?") +
@@ -1236,8 +1236,8 @@ colnames(shootings_per_year_multi) <- c("Year", "Multiple_Weapons_Used", "Num_Sh
     axis.line.x = element_line(colour = "#666666"),
     plot.margin=unit(c(1,0,1,0),"cm"))
 
-# Display the bar chart 
-plot_year_multi
+# Display the bubble chart
+bubble_year_multi
 
 ```
 
@@ -1254,10 +1254,10 @@ colnames(shootings_per_year_prior) <- c("Year", "Prior_Signs_Of_Mental_Health_Is
 
 ```{r display_plot_year_prior, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by year and whether there were prior signs of mental health issues
- plot_year_prior <- ggplot(aes(y=Num_Shootings, x=Year, colour=Prior_Signs_Of_Mental_Health_Issues), data = shootings_per_year_prior) + 
-  geom_line(size = 2, alpha = 0.9) +
-  scale_colour_manual(values = c(colour_palette[60], colour_palette[80], colour_palette[97])) +
+# Create a bubble chart
+bubble_year_prior <- ggplot(shootings_per_year_prior, aes(x=Year, y=Num_Shootings, color = Prior_Signs_Of_Mental_Health_Issues)) +
+  geom_point(alpha=0.9, size = 5)+
+  scale_colour_manual(values = c(colour_palette[90], colour_palette[65], colour_palette[40]))+
   labs(x = "Year",
        y = "Number of mass shootings",
        colour = "Prior Signs of Mental Health Issues?") +
@@ -1275,8 +1275,8 @@ colnames(shootings_per_year_prior) <- c("Year", "Prior_Signs_Of_Mental_Health_Is
     axis.line.x = element_line(colour = "#666666"),
     plot.margin=unit(c(1,0,1,0),"cm"))
 
-# Display the bar chart 
-plot_year_prior
+# Display the bubble chart
+bubble_year_prior
 
 ```  
 
@@ -1292,10 +1292,10 @@ colnames(shootings_per_year_legally) <- c("Year", "Weapons_Obtained_Legally", "N
 
 ```{r display_plot_year_legally, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by year and whether weapons were obtained legally
- plot_year_legally <- ggplot(aes(y=Num_Shootings, x=Year, colour=Weapons_Obtained_Legally), data = shootings_per_year_legally) + 
-  geom_line(size = 2, alpha = 0.9) +
-  scale_colour_manual(values = c(colour_palette[20], colour_palette[55], colour_palette[80])) +
+# Create a bubble chart
+bubble_year_legally <- ggplot(shootings_per_year_legally, aes(x=Year, y=Num_Shootings, color = Weapons_Obtained_Legally)) +
+  geom_point(alpha=0.9, size = 5)+
+  scale_colour_manual(values = c(colour_palette[20], colour_palette[55], colour_palette[80]))+
   labs(x = "Year",
        y = "Number of mass shootings",
        colour = "Weapons Obtained Legally?") +
@@ -1311,10 +1311,10 @@ colnames(shootings_per_year_legally) <- c("Year", "Weapons_Obtained_Legally", "N
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm")) 
+    plot.margin=unit(c(1,0,1,0),"cm"))
 
-# Display the bar chart 
-plot_year_legally
+# Display the bubble chart
+bubble_year_legally
 
 ```  
 
@@ -1330,10 +1330,10 @@ colnames(shootings_per_year_loc_type) <- c("Year", "Location_Type", "Num_Shootin
 
 ```{r display_plot_year_loc_type, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a bar chart using ggplot2 to show shootings by year and location type
- plot_year_loc_type <- ggplot(aes(y=Num_Shootings, x=Year, colour=Location_Type), data = shootings_per_year_loc_type) + 
-  geom_line(size = 2, alpha = 0.9) +
-  scale_colour_manual(values = c(colour_palette[5],colour_palette[20], colour_palette[47], colour_palette[69], colour_palette[83], colour_palette[95])) +
+# Create a bubble chart
+bubble_year_loc_type <- ggplot(shootings_per_year_loc_type, aes(x=Year, y=Num_Shootings, color = Location_Type)) +
+  geom_point(alpha=0.9, size = 5)+
+  scale_colour_manual(values = c(colour_palette[5],colour_palette[20], colour_palette[47], colour_palette[69], colour_palette[83], colour_palette[95]))+
   labs(x = "Year",
        y = "Number of mass shootings",
        colour = "Location Type") +
@@ -1349,10 +1349,10 @@ colnames(shootings_per_year_loc_type) <- c("Year", "Location_Type", "Num_Shootin
     panel.grid.major = element_line(colour = "#e0e0e0"), # Add the major grid lines back in
     panel.grid.minor = element_line(colour = "#e0e0e0"),
     axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))  
+    plot.margin=unit(c(1,0,1,0),"cm"))
 
-# Display the bar chart 
-plot_year_loc_type
+# Display the bubble chart
+bubble_year_loc_type
 
 ```
 
