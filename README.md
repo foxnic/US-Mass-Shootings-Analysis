@@ -35,3 +35,40 @@ Results published to HTML using RMarkdown.
 HTML styled using CSS.
 
 HTML file is hosted on rpubs.com
+
+# R Packages Used
+
+- tidyverse
+- operators
+- magrittr
+- dplyr
+- knitr
+- sf
+- usmap
+- waffle
+- treemapify
+- gganimate
+- tweenr
+- gifski
+- png
+- viridis
+
+# Visualisation Types
+
+ggplot, gganimate, usmap, treemapify and waffle were used to create the data visualisations, which include:
+
+- Map of US states 
+- Treemap 
+- A big ol' number
+- Line graph with trend line and data labels
+- Animated bar chart
+- Static bar chart with data labels
+- Lollipop chart with data labels inside the bubbles
+- Proportional stacked bar chart
+- Heatmap
+- Faceted line graphs
+- Waffle chart
+- Diverging bar chart 
+- Scatter plot
+- Tables
+
