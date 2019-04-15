@@ -12,7 +12,7 @@ http://rpubs.com/foxnic/shootings_v1
 
 The reason this analysis was conducted was because: 
 
-- I wanted a project to help me to learn more about R and Shiny, 
+- I wanted a project to help me to learn more about R 
 - someone posted a link to this data set on one of the Data Visualisation Society's Slack
  channels
 - I was interested in what the data would tell me about mass shootings in the US
