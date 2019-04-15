@@ -4,9 +4,8 @@ An analysis of US mass shootings between 1982 and 2019.
 
 # Output
 
-The output of this code is an html page which can be viewed here:
+The output of this code is an html page which can be viewed on [Rpubs.com](http://rpubs.com/foxnic/shootings_v1)
 
-http://rpubs.com/foxnic/shootings_v1
 
 # Motivation
 
@@ -23,9 +22,7 @@ This analysis is based on data on US mass shootings 1982 - 2019 provided by Moth
 
 “Our research focused on indiscriminate rampages in public places resulting in four or more victims killed by the attacker. We exclude shootings stemming from more conventionally motivated crimes such as armed robbery or gang violence.”
 
-Data is available for download here: 
-
-https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/
+Data is available for download on [motherjones.com](https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/)
 
 # Tools Used
 Analysis done using R in RStudio.
@@ -72,3 +69,9 @@ ggplot, gganimate, usmap, treemapify and waffle were used to create the data vis
 - Scatter plot
 - Tables
 
+# Useful Links
+
+- [R For Data Science Community](https://www.rfordatasci.com/)
+- [Data Visualisation Society](https://www.datavisualizationsociety.com/)
+- [Top 50 Ggplot2 Visualisations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code)
+- [Data Viz Catalogue](https://datavizcatalogue.com/)
