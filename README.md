@@ -33,3 +33,5 @@ Analysis done using R in RStudio.
 Results published to HTML using RMarkdown.
 
 HTML styled using CSS.
+
+HTML file is hosted on rpubs.com
