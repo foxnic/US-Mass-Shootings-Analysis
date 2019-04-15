@@ -209,6 +209,7 @@ plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims"
 plot_state_map_victims
 
 ```
+**35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.    
 
 **Nevada** has had the most victims from mass shootings, due to the 2017 Las Vegas Strip massacre in which there were **604** victims (546 injured, and 58 killed). 
   
@@ -241,10 +242,10 @@ treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, lab
 # Display the treemap chart of shootings per state
 treemap_state_shootings
 
-```
-**California** has had the most mass shootings (**19**). 
+```  
 
-**35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.  
+
+**California** has had the most mass shootings (**19**). 
     
     
 ## Shootings By Gender
@@ -481,7 +482,7 @@ treemap_prior_shootings
 
 **More than half** (53%) of mass shooters had **prior signs** of mental health issues.
 
-Arkansas is the only state to have mass shootings in which the shooter did **not** have any prior signs of mental health issues, but Arizona has only had **1** mass shooting and the shooter was only **11 years old**. 
+Arkansas is the only state where none of their shooters had prior signs of mental health issues, but Arkansas has only had **1** mass shooting and the shooter was only **11 years old**. 
     
       
         
