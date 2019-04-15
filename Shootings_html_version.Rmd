@@ -1,6 +1,6 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
-date: 14/04/2019
+date: 15/04/2019
 author: Nic Fox
 output: 
   html_document:
@@ -177,8 +177,10 @@ This analysis is based on data on US mass shootings 1982 - 2019 provided by Moth
 
 The download is available on [motherjones.com](https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/)  
 
+  
+  
+# Key Findings 
 
-# Summary 
 ## Victims By State
 
 ```{r create_state_victims_summary, include=FALSE}
@@ -210,7 +212,8 @@ plot_state_map_victims
 ```
 
 **Nevada** has had the most victims from mass shootings, due to the 2017 Las Vegas Strip massacre in which there were **604** victims (546 injured, and 58 killed). 
-
+  
+  
 ## Shootings By State
 
 ```{r create_state_summary, include=FALSE}
@@ -243,7 +246,8 @@ treemap_state_shootings
 **35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.
 
 **California** has had the most mass shootings (**19**).  
-
+  
+  
 ## Shootings By Gender
 
 ```{r create_gender_summary, include=FALSE}
@@ -258,7 +262,8 @@ colnames(shootings_per_gender) <- c("gender", "shootings")
 ### 96%
 
 of mass shooters were **men**
-
+  
+  
 ## Shootings By Year
 
 ```{r create_year_summary, include=FALSE}
@@ -303,7 +308,8 @@ my_line_plot
 The number of mass shootings per year in the US is **increasing**.  
 
 The year with the most shootings was **2018** which consisted of **11%** of the mass shootings.
-
+  
+  
 ## Shootings Per State Over Time
 
 ```{r create_year_state_summary, include=FALSE}
@@ -348,7 +354,8 @@ animated_shootings_gif
 # anim_save('animated_shootings.gif', animation = animated_shootings_gif) # This saves a file but its a bunch of static frames rather than an animated gif. Need to look into this.
 
 ```
-
+  
+  
 ## Shootings By Decade
 
 ```{r create_decade_column, include=FALSE}
@@ -398,7 +405,8 @@ plot_decade
 ```
 
 The number of mass shootings this decade is almost **triple** the number in the previous decade.
-
+  
+  
 ## Shootings By Race
 
 ```{r create_race_summary, include=FALSE}
@@ -441,7 +449,8 @@ lollipop_race
 ```
 
 **56%** of mass shooters were **white**.
-
+  
+  
 ## Prior Signs of Mental Health Issues
 
 ```{r create_prior_summary, include=FALSE}
@@ -471,515 +480,8 @@ treemap_prior_shootings
 ```
 
 **53%** of mass shooters had **prior signs** of mental health issues.
-
-## Were Weapons Obtained Legally?
-
-```{r create_legally_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings based on whether the weapons were obtained legally or not
-shootings_per_legally <- data.frame(table(cleansed_data$weapons_obtained_legally))
-
-# Change the column heading names to "legally" and "shootings"
-colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
-```
-
-```{r display_plot_legally, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a treemap chart for shootings involving legal and illegal weapons
-treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
-  theme(
-    legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 16),
-    legend.text = element_text(colour = "#666666", size = 16))+
-  geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
-  geom_treemap_text(colour = "white", place = "centre",
-                    grow = TRUE)
-
-# Display the treemap chart 
-treemap_legally_shootings
-
-```
-
-**72%** of mass shooters obtained weapons **legally**.
-
-## Shootings By Location Type
-
-```{r create_loc_type_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings by location type
-shootings_per_loc_type <- data.frame(table(cleansed_data$location.1))
-
-# Change the column heading names to "location.1" and "shootings"
-colnames(shootings_per_loc_type) <- c("location.1", "shootings")
-```
-
-```{r display_plot_loc_type, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a lollipop chart using ggplot2 to show number of shootings per location type
-lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=location.1)) +
-  geom_segment( aes(x = location.1, xend=location.1, y=0, yend=shootings), 
-                color = "#e0e1e2", 
-                size = 2) +
-  geom_point( size=15, 
-              color=colour_palette[60], 
-              fill=colour_palette[60], 
-              shape=21
-              ) +
-  labs(y = "Number of mass shootings") +
-  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 9) +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 22),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 18),
-    axis.title.x = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-    coord_cartesian(ylim=c(0,50))
-
-# Display the chart
-lollipop_loc_type
-
-```
- 
-
-A **third** of US mass shootings occurred in a **workplace**.
-
-## Age Of Shooter
-
-```{r create_age_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings by age
-shootings_per_age <- data.frame(table(cleansed_data$age_of_shooter))
-
-# Change the column heading names to "age" and "shootings"
-colnames(shootings_per_age) <- c("age_of_shooter", "shootings")
-```
-
-```{r display_plot_age, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by age
-plot_age <- ggplot(shootings_per_age, aes(y=shootings, x=age_of_shooter)) + 
-  geom_bar(position="dodge", stat="identity", fill = colour_palette[45]) +
-  labs(x = "Age",
-       y = "Number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 6, col = "#666666", fontface = "bold") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 12),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 18),
-    axis.title.x = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm")) +
-    coord_cartesian(ylim=c(0,8))
-
-# Display the bar chart 
-plot_age
-
-```
-
-Shooter ages ranged from **11** to **66**.
-
-## Age Bracket Of Shooter
-
-```{r create_age_bracket_column, include=FALSE}
-
-# Create a new column called age_bracket and populate it with the age bracket of each shooter. 
-
-cleansed_data$age_bracket <- case_when(
-    cleansed_data$age_of_shooter <= 12 ~ "1-12",
-    cleansed_data$age_of_shooter > 12 & cleansed_data$age_of_shooter < 20 ~ "13-19",
-    cleansed_data$age_of_shooter >= 20 & cleansed_data$age_of_shooter < 30 ~ "20s",
-    cleansed_data$age_of_shooter >= 30 & cleansed_data$age_of_shooter < 40 ~ "30s",
-    cleansed_data$age_of_shooter >= 40 & cleansed_data$age_of_shooter < 50 ~ "40s",
-    cleansed_data$age_of_shooter >= 50 & cleansed_data$age_of_shooter < 60 ~ "50s",
-    cleansed_data$age_of_shooter >= 60 & cleansed_data$age_of_shooter < 70 ~ "60s"
-)
-
-```
-
-```{r create_age_bracket_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings by age bracket
-shootings_per_age_bracket <- data.frame(table(cleansed_data$age_bracket))
-
-# Change the column heading names to "age bracket" and "shootings"
-colnames(shootings_per_age_bracket) <- c("age_bracket", "shootings")
-```
-
-```{r display_plot_age_bracket, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by age bracket
-plot_age_bracket <- ggplot(shootings_per_age_bracket, aes(y=shootings, x=age_bracket)) + 
-  geom_bar(position="dodge", stat="identity", fill = colour_palette[30]) +
-  labs(x = "Age bracket",
-       y = "Number of mass shootings") +
-  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666", fontface = "bold") +
-  theme(
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 22),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 18),
-    axis.title.x = element_blank(), 
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm")) +
-    coord_cartesian(ylim=c(0,40))
-
-# Display the bar chart 
-plot_age_bracket
-
-```
-
-A **third** of mass shooters were in their **20s** (34% of mass shootings).
-
-## Semi-Automatic Weapons
-
-```{r create_semi_auto_used_column, include=FALSE}
-
-# Create a new column called semi_auto_used and populate it with Yes or No depending on whether the shooter used a semi-automatic weapon
-
-cleansed_data$semi_auto_used <- "No"
-
-cleansed_data[grep("automatic", cleansed_data$weapon_type, ignore.case = TRUE), "semi_auto_used"] <- "Yes" 
-```
-
-```{r create_semi_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings by whether semi automatic weapons were used
-shootings_per_semi <- data.frame(table(cleansed_data$semi_auto_used))
-
-# Change the column heading names to "semi automatic weapon used" and "shootings"
-colnames(shootings_per_semi) <- c("semi_auto_used", "shootings")
-
-# Add a Percentage column containing the % of shootings for each category (yes, no)
-shootings_per_semi$percentage <- round(shootings_per_semi$shootings / sum(shootings_per_semi$shootings) * 100, 0)
-```
-
-```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=2}
-
-# Create a waffle chart
-semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= colour_palette[70], 'No'=colour_palette[95]))
-
-# Display the waffle chart
-semi_auto_waffle
-
-```
-
-Almost **two thirds** (65%) of mass shootings involved **semi-automatic weapons**.
-
-## Multiple Weapons
-
-```{r create_multiple_weapons_used_column, include=FALSE}
-
-# Create a new column called multiple_weapons_used and populate it with Yes or No depending on whether the shooter used more than one weapon
-
-cleansed_data$multiple_weapons_used <- "No"
-
-cleansed_data[grep("Two", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
-
-cleansed_data[grep("Three", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
-
-cleansed_data[grep("Five", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes"
-
-cleansed_data[grep(" and ", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
-
-cleansed_data[grep(",", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
-
-cleansed_data[grep(";", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
-
-cleansed_data[grep("rifles", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
-```
-
-```{r create_multiple_weapons_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings by whether multiple weapons were used
-shootings_per_multiple <- data.frame(table(cleansed_data$multiple_weapons_used))
-
-# Change the column heading names to "multiple weapon used" and "shootings"
-colnames(shootings_per_multiple) <- c("multiple_weapons_used", "shootings")
-
-# Add a Percentage column containing the % of shootings for each category (yes, no)
-shootings_per_multiple$percentage <- round(shootings_per_multiple$shootings / sum(shootings_per_multiple$shootings) * 100, 0)
-
-```
-
-```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
-
-# Create a waffle chart
-multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[20], 'No'=colour_palette[55]))
-
-# Display the waffle chart
-multiple_weapons_waffle
-```
-
-Just **over half** (53%) of mass shootings involved **multiple weapons**.
-
-# State
-## State & Decade 
-
-```{r create_decade_state_summary, include=FALSE}
-
-# Create a new data frame that shows number of shootings per decade per state
-shootings_per_decade_state <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$state),FUN = sum)
-
-# Change the column heading names to "decade", "state", shootings"
-colnames(shootings_per_decade_state) <- c("decade", "state", "shootings")
-```
-
-```{r display_plot_decade_state, echo=FALSE, fig.height=7, fig.width=10}
-
-# Create a heatmap showing the number of mass shootings per decade per state
-heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) + 
-  geom_tile(aes(fill = shootings), colour = "white") + 
-  scale_fill_gradient(low = colour_palette[50], high = colour_palette[20])+
-  theme(
-    legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 10),
-    axis.text.y = element_text(colour = "#666666", size = 12),
-    axis.text.x = element_text(colour = "#666666", size = 16),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 18),
-    axis.title.x = element_blank(),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-  scale_y_discrete(position = "right", 
-                   # Re-order the states so "AR"" is at the top rather than the bottom of the y axis
-                   limits = rev(levels(as.factor(shootings_per_decade_state$state))))
-
-# Display heatmap of shootings per decade and state
-heatmap_decade_state
-```
-
-**California** and **Texas** have had mass shootings in every decade.  
-
-## State & Semi-Automatic Weapons
-
-```{r create_state_semi_summary, include=FALSE}
-# Create a new data frame that shows number by state and whether semi-automatic weapons were used
-shootings_per_state_semi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$semi_auto_used),FUN = sum)
-
-# Change the column heading names to State, Semi_Auto_Weapons_Used, and Num_Shootings
-colnames(shootings_per_state_semi) <- c("State", "Semi_Auto_Weapons_Used", "Num_Shootings")
-
-# Change the Num_Shootings values for "No" to negative numbers, so values for "No" are on the bottom and values for "Yes" are on the top
-shootings_per_state_semi$Num_Shootings = case_when(
-   shootings_per_state_semi$Semi_Auto_Weapons_Used == "No" ~ -shootings_per_state_semi$Num_Shootings,
-   shootings_per_state_semi$Semi_Auto_Weapons_Used == "Yes" ~ shootings_per_state_semi$Num_Shootings
-)
-```
-
-```{r display_plot_state_semi, echo=FALSE, fig.width=10, fig.height=5}
-
-brks <- seq(-16, 16, 2) # X Axis Breaks
-lbls = as.character(c(seq(16, 0, -2), seq(2, 16, 2))) # X Axis Labels
-
-# Create a bar chart using ggplot2 to show shootings by state and whether semi-automatic weapons were used
- plot_state_semi <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Semi_Auto_Weapons_Used), 
-           data = shootings_per_state_semi, 
-           stat = "identity") +
-   scale_y_continuous(breaks = brks,   # Breaks
-                     labels = lbls) + # Labels
-   scale_fill_manual(values = c(colour_palette[95], colour_palette[50])) +
-   labs(x = "State",
-       y = "Number of mass shootings",
-       fill = "Semi-Auto Weapons Used?") +
-   theme(
-     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 16),
-     legend.text = element_text(colour = "#666666", size = 16),
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.title = element_text(colour = "#666666", size = 16),
-    axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-   guides(fill = guide_legend(reverse = TRUE))
-
-# Display the bar chart 
-plot_state_semi
-```
-
-Of the 35 states that have had a mass shooting, 30 (**85%**) have had shootings involving semi-automatic weapons.  
-
-Only 5 states have not had any mass shootings with semi-automatic weapons.
-
-In the 3 states with the most mass shootings - California, Florida and Texas - more shootings have involved semi-automatic weapons than without.
-
-For 14 states (**40%** of the states that have had mass shootings), for example Connecticut, **all** their mass shootings have involved semi-automatic weapons. 
-
-## State & Multiple Weapons
-
-```{r create_state_multi_summary, include=FALSE}
-# Create a new data frame that shows number by state and whether multiple weapons were used
-shootings_per_state_multi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$multiple_weapons_used),FUN = sum)
-
-# Change the column heading names to State, Multiple_Weapons_Used, and Num_Shootings
-colnames(shootings_per_state_multi) <- c("State", "Multiple_Weapons_Used", "Num_Shootings")
-
-# Change the Num_Shootings values for "No" to negative numbers, so values for "No" are on the bottom and values for "Yes" are on the top
-shootings_per_state_multi$Num_Shootings = case_when(
-   shootings_per_state_multi$Multiple_Weapons_Used == "No" ~ -shootings_per_state_multi$Num_Shootings,
-   shootings_per_state_multi$Multiple_Weapons_Used == "Yes" ~ shootings_per_state_multi$Num_Shootings
-)
-```
-
-```{r display_plot_state_multi, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by state and whether multiple weapons were used
- plot_state_multi <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=State, fill=Multiple_Weapons_Used), data = shootings_per_state_multi, stat = "identity") +
-  scale_y_continuous(breaks = brks,   # Breaks
-                     labels = lbls) + # Labels
-  scale_fill_manual(values = c(colour_palette[65], colour_palette[25])) +
-  labs(x = "State",
-       y = "Number of mass shootings",
-       fill = "Multiple Weapons Used?") +
-  theme(
-    legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 16),
-    legend.text = element_text(colour = "#666666", size = 16),
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.title = element_text(colour = "#666666", size = 16),
-    axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-   guides(fill = guide_legend(reverse = TRUE))
-
-# Display the bar chart 
-plot_state_multi
-
-```
-
-28 of the 35 states (**80%**) have had mass shootings involving multiple weapons.
-
-7 of the states have only had mass shootings involving a single weapon.
-
-In the state with the most mass shootings - **California** - **most** of the mass shootings involved multiple weapons.
- 
-## State & Race
-
-```{r create_state_race_summary, include=FALSE}
-# Create a new data frame that shows number of shootings by state and race
-shootings_per_state_race <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$race),FUN = sum)
-
-# Change the column heading names to State, Race and Num_Shootings
-colnames(shootings_per_state_race) <- c("State", "Race", "Num_Shootings")
-
-```
-
-```{r display_plot_state_race, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a heatmap showing the number of mass shootings per state per race
-heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) + 
-  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
-  scale_fill_gradient(low = "#f2b698", high = "#e56222")+
-  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
-  labs(fill = "Number of Shootings")+
-  theme(
-    legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 8),
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 16),
-    axis.title.x = element_blank(),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-  coord_flip() +
-  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_race$Race))))
-
-# Display heatmap of shootings per race and state
-heatmap_state_race
-
-```
-
-
-
-## State & Weapons Obtained Legally
-
-```{r create_state_legally_summary, include=FALSE}
-# Create a new data frame that shows number by state and whether weapons were obtained legally
-shootings_per_state_legally <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$weapons_obtained_legally),FUN = sum)
-
-# Change the column heading names to State, Weapons_Obtained_Legally, and Num_Shootings
-colnames(shootings_per_state_legally) <- c("State", "Weapons_Obtained_Legally", "Num_Shootings")
-```
-
-```{r display_plot_state_legally, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a heatmap showing the number of mass shootings per state per race
-heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtained_Legally, State)) + 
-  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
-  scale_fill_gradient(low = "#eda097", high = "#d63d2c")+
-  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
-  labs(x = "Weapons Obtained Legally?", fill = "Number of Shootings")+
-  theme(
-    legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 8),
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 16),
-    axis.title.x = element_blank(),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-  coord_flip() +
-  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_legally$Weapons_Obtained_Legally))))
-
-# Display heatmap of shootings per state and whether weapons were obtained legally
-heatmap_state_legally
-
-```  
-
-
-## State & Location Type
-
-```{r create_state_loc_type_summary, include=FALSE}
-# Create a new data frame that shows number by state and location type
-shootings_per_state_loc_type <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$location.1),FUN = sum)
-
-# Change the column heading names to State, Location_Type and Num_Shootings
-colnames(shootings_per_state_loc_type) <- c("State", "Location_Type", "Num_Shootings")
-```
-
-```{r display_plot_state_loc_type, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a heatmap showing the number of mass shootings per state per location type
-heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type, State)) + 
-  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
-  scale_fill_gradient(low = "#ddadb8", high = "#c9264f")+
-  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
-  labs(x = "Location Type", fill = "Number of Shootings")+
-  theme(
-    legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 8),
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 16),
-    axis.title.x = element_blank(),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-  coord_flip() +
-  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_loc_type$Location_Type))))
-
-# Display heatmap of shootings per state and location type
-heatmap_state_loc_type
-
-```
-
+  
+  
 ## State & Prior Signs of Mental Health Issues
 
 ```{r create_state_prior_summary, include=FALSE}
@@ -1040,46 +542,214 @@ heatmap_state_prior
 
 Most of the mass shooters had prior signs of mental health issues in most of the states.   
 
-Only 2 of the states (**5%**) have had more mass shootings with **no prior signs** of mental health issues.
+Only 2 of the states (**5%**) have had more mass shootings with **no prior signs** of mental health issues.  
 
+## Were Weapons Obtained Legally?
 
-## State & Age Bracket
+```{r create_legally_summary, include=FALSE}
 
-```{r create_state_age_summary, include=FALSE}
-# Create a new data frame that shows number by state and age bracket
-shootings_per_state_age <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$age_bracket),FUN = sum)
+# Create a new data frame that shows number of shootings based on whether the weapons were obtained legally or not
+shootings_per_legally <- data.frame(table(cleansed_data$weapons_obtained_legally))
 
-# Change the column heading names to State, Age_Bracket and Num_Shootings
-colnames(shootings_per_state_age) <- c("State", "Age_Bracket", "Num_Shootings")
+# Change the column heading names to "legally" and "shootings"
+colnames(shootings_per_legally) <- c("weapons_obtained_legally", "shootings")
 ```
 
-```{r display_plot_state_age, echo=FALSE, fig.width=10, fig.height=5}
+```{r display_plot_legally, echo=FALSE, fig.width=10, fig.height=5}
 
-# Create a heatmap showing the number of mass shootings per state and age bracket
-heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) + 
-  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
-  scale_fill_gradient(low = "#d4aee5", high = colour_palette[30])+
-  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
-  labs(x = "Age Bracket", fill = "Number of Shootings")+
+# Create a treemap chart for shootings involving legal and illegal weapons
+treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings, label = weapons_obtained_legally)) +
   theme(
     legend.position = "top",
-     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
-    legend.text = element_text(colour = "#666666", size = 8),
-    axis.text.y = element_text(colour = "#666666", size = 16),
-    axis.text.x = element_text(colour = "#666666", size = 8),
-    axis.ticks = element_blank(),
-    axis.title.y = element_text(colour = "#666666", size = 16),
-    axis.title.x = element_blank(),
-    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
-    plot.margin=unit(c(1,0,1,0),"cm"))+
-  coord_flip() 
+    legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16))+
+  geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
+  geom_treemap_text(colour = "white", place = "centre",
+                    grow = TRUE)
 
-# Display heatmap of shootings per state and age bracket
-heatmap_state_age
+# Display the treemap chart 
+treemap_legally_shootings
 
 ```
 
-# Year/Decade
+**72%** of mass shooters obtained weapons **legally**.
+  
+  
+## Shootings By Location Type
+
+```{r create_loc_type_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by location type
+shootings_per_loc_type <- data.frame(table(cleansed_data$location.1))
+
+# Change the column heading names to "location.1" and "shootings"
+colnames(shootings_per_loc_type) <- c("location.1", "shootings")
+```
+
+```{r display_plot_loc_type, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a lollipop chart using ggplot2 to show number of shootings per location type
+lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=location.1)) +
+  geom_segment( aes(x = location.1, xend=location.1, y=0, yend=shootings), 
+                color = "#e0e1e2", 
+                size = 2) +
+  geom_point( size=15, 
+              color=colour_palette[60], 
+              fill=colour_palette[60], 
+              shape=21
+              ) +
+  labs(y = "Number of mass shootings") +
+  geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 9) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 18),
+    axis.title.x = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+    coord_cartesian(ylim=c(0,50))
+
+# Display the chart
+lollipop_loc_type
+
+```
+ 
+
+A **third** of US mass shootings occurred in a **workplace**.
+  
+  
+## Location Type & Race
+
+```{r create_loc_type_race_summary, include=FALSE}
+# Create a new data frame that shows number by location type and race
+shootings_per_loc_type_race <- aggregate(cleansed_data$for_count, by=list(cleansed_data$location.1, cleansed_data$race),FUN = sum)
+
+# Change the column heading names to Location_Type, Race and Num_Shootings
+colnames(shootings_per_loc_type_race) <- c("Location_Type", "Race", "Num_Shootings")
+```
+
+```{r display_plot_loc_type_race, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by location type and race
+ plot_loc_type_race <- ggplot() + 
+  geom_bar(aes(y=Num_Shootings, x=Location_Type, fill=Race), data = shootings_per_loc_type_race, stat = "identity", position = "fill") +
+  scale_fill_manual(values = c(colour_palette[20], colour_palette[45], colour_palette[60], colour_palette[75], colour_palette[85], colour_palette[95])) +
+  labs(x = "Location Type",
+       y = "% of mass shootings",
+       fill = "Race") +
+  theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 16),
+    axis.title = element_text(colour = "#666666", size = 16),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm"))              
+
+# Display the bar chart 
+plot_loc_type_race
+
+```
+
+  
+  
+## Age Of Shooter
+
+```{r create_age_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by age
+shootings_per_age <- data.frame(table(cleansed_data$age_of_shooter))
+
+# Change the column heading names to "age" and "shootings"
+colnames(shootings_per_age) <- c("age_of_shooter", "shootings")
+```
+
+```{r display_plot_age, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by age
+plot_age <- ggplot(shootings_per_age, aes(y=shootings, x=age_of_shooter)) + 
+  geom_bar(position="dodge", stat="identity", fill = colour_palette[45]) +
+  labs(x = "Age",
+       y = "Number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 6, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 12),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 18),
+    axis.title.x = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm")) +
+    coord_cartesian(ylim=c(0,8))
+
+# Display the bar chart 
+plot_age
+
+```
+
+Shooter ages ranged from **11** to **66**.
+  
+  
+## Age Bracket Of Shooter
+
+```{r create_age_bracket_column, include=FALSE}
+
+# Create a new column called age_bracket and populate it with the age bracket of each shooter. 
+
+cleansed_data$age_bracket <- case_when(
+    cleansed_data$age_of_shooter <= 12 ~ "1-12",
+    cleansed_data$age_of_shooter > 12 & cleansed_data$age_of_shooter < 20 ~ "13-19",
+    cleansed_data$age_of_shooter >= 20 & cleansed_data$age_of_shooter < 30 ~ "20s",
+    cleansed_data$age_of_shooter >= 30 & cleansed_data$age_of_shooter < 40 ~ "30s",
+    cleansed_data$age_of_shooter >= 40 & cleansed_data$age_of_shooter < 50 ~ "40s",
+    cleansed_data$age_of_shooter >= 50 & cleansed_data$age_of_shooter < 60 ~ "50s",
+    cleansed_data$age_of_shooter >= 60 & cleansed_data$age_of_shooter < 70 ~ "60s"
+)
+
+```
+
+```{r create_age_bracket_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by age bracket
+shootings_per_age_bracket <- data.frame(table(cleansed_data$age_bracket))
+
+# Change the column heading names to "age bracket" and "shootings"
+colnames(shootings_per_age_bracket) <- c("age_bracket", "shootings")
+```
+
+```{r display_plot_age_bracket, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by age bracket
+plot_age_bracket <- ggplot(shootings_per_age_bracket, aes(y=shootings, x=age_bracket)) + 
+  geom_bar(position="dodge", stat="identity", fill = colour_palette[30]) +
+  labs(x = "Age bracket",
+       y = "Number of mass shootings") +
+  geom_text(aes(label=shootings), vjust = -0.5, size = 8, col = "#666666", fontface = "bold") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 18),
+    axis.title.x = element_blank(), 
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm")) +
+    coord_cartesian(ylim=c(0,40))
+
+# Display the bar chart 
+plot_age_bracket
+
+```
+
+A **third** of mass shooters were in their **20s** (34% of mass shootings).
+  
+  
 ## Year & Age Bracket
 
 ```{r create_year_age_summary, include=FALSE}
@@ -1117,7 +787,100 @@ faceted_line_graph_year_age
 
 There is a noticeable increase in recent years in the number of mass shooters in their twenties.
 
-Note: The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.
+Note: The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.  
+
+## Semi-Automatic Weapons
+
+```{r create_semi_auto_used_column, include=FALSE}
+
+# Create a new column called semi_auto_used and populate it with Yes or No depending on whether the shooter used a semi-automatic weapon
+
+cleansed_data$semi_auto_used <- "No"
+
+cleansed_data[grep("automatic", cleansed_data$weapon_type, ignore.case = TRUE), "semi_auto_used"] <- "Yes" 
+```
+
+```{r create_semi_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by whether semi automatic weapons were used
+shootings_per_semi <- data.frame(table(cleansed_data$semi_auto_used))
+
+# Change the column heading names to "semi automatic weapon used" and "shootings"
+colnames(shootings_per_semi) <- c("semi_auto_used", "shootings")
+
+# Add a Percentage column containing the % of shootings for each category (yes, no)
+shootings_per_semi$percentage <- round(shootings_per_semi$shootings / sum(shootings_per_semi$shootings) * 100, 0)
+```
+
+```{r display_plot_semi_auto_used, echo=FALSE, fig.width=10, fig.height=2}
+
+# Create a waffle chart
+semi_auto_waffle <- waffle(c('Yes'=65, 'No'=35), rows = 4, colors = c('Yes'= colour_palette[70], 'No'=colour_palette[95]))
+
+# Display the waffle chart
+semi_auto_waffle
+
+```
+
+Almost **two thirds** (65%) of mass shootings involved **semi-automatic weapons**.
+  
+  
+## State & Semi-Automatic Weapons
+
+```{r create_state_semi_summary, include=FALSE}
+# Create a new data frame that shows number by state and whether semi-automatic weapons were used
+shootings_per_state_semi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$semi_auto_used),FUN = sum)
+
+# Change the column heading names to State, Semi_Auto_Weapons_Used, and Num_Shootings
+colnames(shootings_per_state_semi) <- c("State", "Semi_Auto_Weapons_Used", "Num_Shootings")
+
+# Change the Num_Shootings values for "No" to negative numbers, so values for "No" are on the bottom and values for "Yes" are on the top
+shootings_per_state_semi$Num_Shootings = case_when(
+   shootings_per_state_semi$Semi_Auto_Weapons_Used == "No" ~ -shootings_per_state_semi$Num_Shootings,
+   shootings_per_state_semi$Semi_Auto_Weapons_Used == "Yes" ~ shootings_per_state_semi$Num_Shootings
+)
+```
+
+```{r display_plot_state_semi, echo=FALSE, fig.width=10, fig.height=5}
+
+brks <- seq(-16, 16, 2) # X Axis Breaks
+lbls = as.character(c(seq(16, 0, -2), seq(2, 16, 2))) # X Axis Labels
+
+# Create a bar chart using ggplot2 to show shootings by state and whether semi-automatic weapons were used
+ plot_state_semi <- ggplot() + 
+  geom_bar(aes(y=Num_Shootings, x=State, fill=Semi_Auto_Weapons_Used), 
+           data = shootings_per_state_semi, 
+           stat = "identity") +
+   scale_y_continuous(breaks = brks,   # Breaks
+                     labels = lbls) + # Labels
+   scale_fill_manual(values = c(colour_palette[95], colour_palette[50])) +
+   labs(x = "State",
+       y = "Number of mass shootings",
+       fill = "Semi-Auto Weapons Used?") +
+   theme(
+     legend.position = "top",
+     legend.title = element_text(colour = "#666666", size = 16),
+     legend.text = element_text(colour = "#666666", size = 16),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.title = element_text(colour = "#666666", size = 16),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+   guides(fill = guide_legend(reverse = TRUE))
+
+# Display the bar chart 
+plot_state_semi
+```
+
+Of the 35 states that have had a mass shooting, 30 (**85%**) have had shootings involving semi-automatic weapons.  
+
+Only 5 states have not had any mass shootings with semi-automatic weapons.
+
+In the 3 states with the most mass shootings - California, Florida and Texas - more shootings have involved semi-automatic weapons than without.
+
+For 14 states (**40%** of the states that have had mass shootings), for example Connecticut, **all** their mass shootings have involved semi-automatic weapons.  
 
 ## Decade & Semi-Automatic Weapons
 
@@ -1161,7 +924,298 @@ bubble_decade_semi
 ```
 
 In every decade, more mass shootings have involved semi-automatic weapons than without.
+  
+  
+## Multiple Weapons
 
+```{r create_multiple_weapons_used_column, include=FALSE}
+
+# Create a new column called multiple_weapons_used and populate it with Yes or No depending on whether the shooter used more than one weapon
+
+cleansed_data$multiple_weapons_used <- "No"
+
+cleansed_data[grep("Two", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep("Three", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep("Five", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes"
+
+cleansed_data[grep(" and ", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep(",", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep(";", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+
+cleansed_data[grep("rifles", cleansed_data$weapon_type, ignore.case = TRUE), "multiple_weapons_used"] <- "Yes" 
+```
+
+```{r create_multiple_weapons_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings by whether multiple weapons were used
+shootings_per_multiple <- data.frame(table(cleansed_data$multiple_weapons_used))
+
+# Change the column heading names to "multiple weapon used" and "shootings"
+colnames(shootings_per_multiple) <- c("multiple_weapons_used", "shootings")
+
+# Add a Percentage column containing the % of shootings for each category (yes, no)
+shootings_per_multiple$percentage <- round(shootings_per_multiple$shootings / sum(shootings_per_multiple$shootings) * 100, 0)
+
+```
+
+```{r display_plot_multiple_weapons_used, echo=FALSE, fig.width=10, fig.height=2}
+
+# Create a waffle chart
+multiple_weapons_waffle <- waffle(c('Yes'=53, 'No'=47), rows = 4, colors = c('Yes'= colour_palette[20], 'No'=colour_palette[55]))
+
+# Display the waffle chart
+multiple_weapons_waffle
+```
+
+Just **over half** (53%) of mass shootings involved **multiple weapons**.
+  
+    
+    
+# Other Visualisations  
+
+## State & Decade 
+
+```{r create_decade_state_summary, include=FALSE}
+
+# Create a new data frame that shows number of shootings per decade per state
+shootings_per_decade_state <- aggregate(cleansed_data$for_count, by=list(cleansed_data$decade, cleansed_data$state),FUN = sum)
+
+# Change the column heading names to "decade", "state", shootings"
+colnames(shootings_per_decade_state) <- c("decade", "state", "shootings")
+```
+
+```{r display_plot_decade_state, echo=FALSE, fig.height=7, fig.width=10}
+
+# Create a heatmap showing the number of mass shootings per decade per state
+heatmap_decade_state <- ggplot(shootings_per_decade_state, aes(decade, state)) + 
+  geom_tile(aes(fill = shootings), colour = "white") + 
+  scale_fill_gradient(low = colour_palette[50], high = colour_palette[20])+
+  theme(
+    legend.position = "top",
+    legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 10),
+    axis.text.y = element_text(colour = "#666666", size = 12),
+    axis.text.x = element_text(colour = "#666666", size = 16),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 18),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  scale_y_discrete(position = "right", 
+                   # Re-order the states so "AR"" is at the top rather than the bottom of the y axis
+                   limits = rev(levels(as.factor(shootings_per_decade_state$state))))
+
+# Display heatmap of shootings per decade and state
+heatmap_decade_state
+```
+  
+  
+## State & Multiple Weapons
+
+```{r create_state_multi_summary, include=FALSE}
+# Create a new data frame that shows number by state and whether multiple weapons were used
+shootings_per_state_multi <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$multiple_weapons_used),FUN = sum)
+
+# Change the column heading names to State, Multiple_Weapons_Used, and Num_Shootings
+colnames(shootings_per_state_multi) <- c("State", "Multiple_Weapons_Used", "Num_Shootings")
+
+# Change the Num_Shootings values for "No" to negative numbers, so values for "No" are on the bottom and values for "Yes" are on the top
+shootings_per_state_multi$Num_Shootings = case_when(
+   shootings_per_state_multi$Multiple_Weapons_Used == "No" ~ -shootings_per_state_multi$Num_Shootings,
+   shootings_per_state_multi$Multiple_Weapons_Used == "Yes" ~ shootings_per_state_multi$Num_Shootings
+)
+```
+
+```{r display_plot_state_multi, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a bar chart using ggplot2 to show shootings by state and whether multiple weapons were used
+ plot_state_multi <- ggplot() + 
+  geom_bar(aes(y=Num_Shootings, x=State, fill=Multiple_Weapons_Used), data = shootings_per_state_multi, stat = "identity") +
+  scale_y_continuous(breaks = brks,   # Breaks
+                     labels = lbls) + # Labels
+  scale_fill_manual(values = c(colour_palette[65], colour_palette[25])) +
+  labs(x = "State",
+       y = "Number of mass shootings",
+       fill = "Multiple Weapons Used?") +
+  theme(
+    legend.position = "top",
+     legend.title = element_text(colour = "#666666", size = 16),
+    legend.text = element_text(colour = "#666666", size = 16),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.title = element_text(colour = "#666666", size = 16),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),
+    axis.line.x = element_line(colour = "#666666"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+   guides(fill = guide_legend(reverse = TRUE))
+
+# Display the bar chart 
+plot_state_multi
+
+```
+   
+   
+## State & Race
+
+```{r create_state_race_summary, include=FALSE}
+# Create a new data frame that shows number of shootings by state and race
+shootings_per_state_race <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$race),FUN = sum)
+
+# Change the column heading names to State, Race and Num_Shootings
+colnames(shootings_per_state_race) <- c("State", "Race", "Num_Shootings")
+
+```
+
+```{r display_plot_state_race, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a heatmap showing the number of mass shootings per state per race
+heatmap_state_race <- ggplot(shootings_per_state_race, aes(Race, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#f2b698", high = "#e56222")+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
+  labs(fill = "Number of Shootings")+
+  theme(
+    legend.position = "top",
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 8),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 16),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_race$Race))))
+
+# Display heatmap of shootings per race and state
+heatmap_state_race
+
+```
+
+
+  
+  
+## State & Weapons Obtained Legally
+
+```{r create_state_legally_summary, include=FALSE}
+# Create a new data frame that shows number by state and whether weapons were obtained legally
+shootings_per_state_legally <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$weapons_obtained_legally),FUN = sum)
+
+# Change the column heading names to State, Weapons_Obtained_Legally, and Num_Shootings
+colnames(shootings_per_state_legally) <- c("State", "Weapons_Obtained_Legally", "Num_Shootings")
+```
+
+```{r display_plot_state_legally, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a heatmap showing the number of mass shootings per state per race
+heatmap_state_legally <- ggplot(shootings_per_state_legally, aes(Weapons_Obtained_Legally, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#eda097", high = "#d63d2c")+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
+  labs(x = "Weapons Obtained Legally?", fill = "Number of Shootings")+
+  theme(
+    legend.position = "top",
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 8),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 16),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_legally$Weapons_Obtained_Legally))))
+
+# Display heatmap of shootings per state and whether weapons were obtained legally
+heatmap_state_legally
+
+```  
+
+  
+  
+## State & Location Type
+
+```{r create_state_loc_type_summary, include=FALSE}
+# Create a new data frame that shows number by state and location type
+shootings_per_state_loc_type <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$location.1),FUN = sum)
+
+# Change the column heading names to State, Location_Type and Num_Shootings
+colnames(shootings_per_state_loc_type) <- c("State", "Location_Type", "Num_Shootings")
+```
+
+```{r display_plot_state_loc_type, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a heatmap showing the number of mass shootings per state per location type
+heatmap_state_loc_type <- ggplot(shootings_per_state_loc_type, aes(Location_Type, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#ddadb8", high = "#c9264f")+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
+  labs(x = "Location Type", fill = "Number of Shootings")+
+  theme(
+    legend.position = "top",
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 8),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 16),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() +
+  scale_x_discrete(limits = rev(levels(as.factor(shootings_per_state_loc_type$Location_Type))))
+
+# Display heatmap of shootings per state and location type
+heatmap_state_loc_type
+
+```
+  
+  
+## State & Age Bracket
+
+```{r create_state_age_summary, include=FALSE}
+# Create a new data frame that shows number by state and age bracket
+shootings_per_state_age <- aggregate(cleansed_data$for_count, by=list(cleansed_data$state, cleansed_data$age_bracket),FUN = sum)
+
+# Change the column heading names to State, Age_Bracket and Num_Shootings
+colnames(shootings_per_state_age) <- c("State", "Age_Bracket", "Num_Shootings")
+```
+
+```{r display_plot_state_age, echo=FALSE, fig.width=10, fig.height=5}
+
+# Create a heatmap showing the number of mass shootings per state and age bracket
+heatmap_state_age<- ggplot(shootings_per_state_age, aes(Age_Bracket, State)) + 
+  geom_tile(aes(fill = Num_Shootings), colour = "white") + 
+  scale_fill_gradient(low = "#d4aee5", high = colour_palette[30])+
+  geom_text(aes(label=Num_Shootings), hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 4) +
+  labs(x = "Age Bracket", fill = "Number of Shootings")+
+  theme(
+    legend.position = "top",
+     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
+    legend.text = element_text(colour = "#666666", size = 8),
+    axis.text.y = element_text(colour = "#666666", size = 16),
+    axis.text.x = element_text(colour = "#666666", size = 8),
+    axis.ticks = element_blank(),
+    axis.title.y = element_text(colour = "#666666", size = 16),
+    axis.title.x = element_blank(),
+    panel.background = element_rect(fill = "#FFFFFF", color = "#666666", size = 1, linetype = "solid"),
+    plot.margin=unit(c(1,0,1,0),"cm"))+
+  coord_flip() 
+
+# Display heatmap of shootings per state and age bracket
+heatmap_state_age
+
+```
+
+  
+  
 ## Decade & Multiple Weapons
 
 ```{r create_decade_multi_summary, include=FALSE}
@@ -1202,7 +1256,8 @@ bubble_decade_multi
 
 ```
 
-
+  
+  
 ## Decade & Prior Signs of Mental Health Issues
 
 ```{r create_decade_prior_summary, include=FALSE}
@@ -1242,7 +1297,8 @@ bubble_decade_prior <- ggplot(shootings_per_decade_prior, aes(x=Decade, y=Num_Sh
 bubble_decade_prior
 
 ```  
-
+  
+  
 ## Decade & Weapons Obtained Legally
 
 ```{r create_decade_legally_summary, include=FALSE}
@@ -1282,7 +1338,8 @@ bubble_decade_legally <- ggplot(shootings_per_decade_legally, aes(x=Decade, y=Nu
 bubble_decade_legally
 
 ```  
-
+  
+  
 ## Decade & Location Type
 
 ```{r create_decade_loc_type_summary, include=FALSE}
@@ -1322,8 +1379,8 @@ bubble_decade_loc_type <- ggplot(shootings_per_decade_loc_type, aes(x=Decade, y=
 bubble_decade_loc_type
 
 ```
-
-# Mental Health
+  
+  
 ## Semi-Automatic Weapons & Prior Signs of Mental Health Issues
 
 ```{r create_semi_prior_summary, include=FALSE}
@@ -1359,7 +1416,8 @@ colnames(shootings_per_semi_prior) <- c("Semi_Auto_Used", "Prior_Signs_Of_Mental
 plot_semi_prior
 
 ```  
-
+  
+  
 ## Multiple Weapons & Prior Signs of Mental Health Issues
 
 ```{r create_multi_prior_summary, include=FALSE}
@@ -1395,7 +1453,8 @@ colnames(shootings_per_multi_prior) <- c("Multiple_Weapons_Used", "Prior_Signs_O
 plot_multi_prior
 
 ```  
-
+  
+  
 ## Age Bracket & Prior Signs of Mental Health Issues
 
 ```{r create_age_prior_summary, include=FALSE}
@@ -1431,7 +1490,8 @@ colnames(shootings_per_age_prior) <- c("Age_Bracket", "Prior_Signs_Of_Mental_Hea
 plot_age_prior
 
 ```  
-
+  
+  
 ## Weapons Obtained Legally & Prior Signs of Mental Health Issues
 
 ```{r create_legally_prior_summary, include=FALSE}
@@ -1467,7 +1527,8 @@ colnames(shootings_per_legally_prior) <- c("Weapons_Obtained_Legally", "Prior_Si
 plot_legally_prior
 
 ```  
-
+  
+  
 ## Location Type & Prior Signs of Mental Health Issues
 
 ```{r create_loc_type_prior_summary, include=FALSE}
@@ -1503,8 +1564,8 @@ colnames(shootings_per_loc_type_prior) <- c("Location_Type", "Prior_Signs_Of_Men
 plot_loc_type_prior
 
 ```  
-
-# Semi-Automatic Weapons
+  
+  
 ## Semi-Automatic Weapons & Multiple Weapons
 
 ```{r create_multi_semi_summary, include=FALSE}
@@ -1540,7 +1601,8 @@ colnames(shootings_per_multi_semi) <- c("Multiple_Weapons_Used", "Semi_Auto_Used
 plot_multi_semi
 
 ```  
-
+  
+  
 ## Semi-Automatic Weapons & Weapons Obtained Legally
 
 ```{r create_semi_legally_summary, include=FALSE}
@@ -1576,7 +1638,8 @@ colnames(shootings_per_semi_legally) <- c("Semi_Auto_Used", "Weapons_Obtained_Le
 plot_semi_legally
 
 ```
-
+  
+  
 ## Semi-Automatic Weapons & Age Bracket
 
 ```{r create_semi_age_summary, include=FALSE}
@@ -1612,7 +1675,8 @@ colnames(shootings_per_semi_age) <- c("Semi_Auto_Used", "Age_Bracket", "Num_Shoo
 plot_semi_age
 
 ```
-
+  
+  
 ## Semi Automatic Weapons & Location Type
 
 ```{r create_loc_type_semi_summary, include=FALSE}
@@ -1648,8 +1712,8 @@ colnames(shootings_per_loc_type_semi) <- c("Location_Type", "Semi_Auto_Used", "N
 plot_loc_type_semi
 
 ```
-
-# Age
+  
+  
 ## Age Bracket & Race
 
 ```{r create_age_race_summary, include=FALSE}
@@ -1685,7 +1749,8 @@ colnames(shootings_per_age_race) <- c("Age_Bracket", "Race", "Num_Shootings")
 plot_age_race
 
 ```
-
+  
+  
 ## Age Bracket & Location Type
 
 ```{r create_loc_type_age_summary, include=FALSE}
@@ -1721,7 +1786,8 @@ colnames(shootings_per_loc_type_age) <- c("Location_Type", "Age_Bracket", "Num_S
 plot_loc_type_age
 
 ```
-
+  
+  
 ## Age Bracket & Weapons Obtained Legally
 
 ```{r create_legally_age_summary, include=FALSE}
@@ -1757,7 +1823,8 @@ colnames(shootings_per_legally_age) <- c("Weapons_Obtained_Legally", "Age_Bracke
 plot_legally_age
 
 ```
-
+  
+  
 ## Age Bracket & Multiple Weapons
 
 ```{r create_multi_age_summary, include=FALSE}
@@ -1793,8 +1860,8 @@ colnames(shootings_per_multi_age) <- c("Multiple_Weapons_Used", "Age_Bracket", "
 plot_multi_age
 
 ```
-
-# Misc.
+  
+  
 ## Multiple Weapons & Weapons Obtained Legally
 
 ```{r create_multi_legally_summary, include=FALSE}
@@ -1830,7 +1897,8 @@ colnames(shootings_per_multi_legally) <- c("Multiple_Weapons_Used", "Weapons_Obt
 plot_multi_legally
 
 ```
-
+  
+  
 ## Location Type & Multiple Weapons
 
 ```{r create_loc_type_multi_summary, include=FALSE}
@@ -1866,45 +1934,10 @@ colnames(shootings_per_loc_type_multi) <- c("Location_Type", "Multiple_Weapons_U
 plot_loc_type_multi
 
 ```
+  
+  
+# Data Cleanse  
 
-## Location Type & Race
-
-```{r create_loc_type_race_summary, include=FALSE}
-# Create a new data frame that shows number by location type and race
-shootings_per_loc_type_race <- aggregate(cleansed_data$for_count, by=list(cleansed_data$location.1, cleansed_data$race),FUN = sum)
-
-# Change the column heading names to Location_Type, Race and Num_Shootings
-colnames(shootings_per_loc_type_race) <- c("Location_Type", "Race", "Num_Shootings")
-```
-
-```{r display_plot_loc_type_race, echo=FALSE, fig.width=10, fig.height=5}
-
-# Create a bar chart using ggplot2 to show shootings by location type and race
- plot_loc_type_race <- ggplot() + 
-  geom_bar(aes(y=Num_Shootings, x=Location_Type, fill=Race), data = shootings_per_loc_type_race, stat = "identity", position = "fill") +
-  scale_fill_manual(values = c(colour_palette[20], colour_palette[45], colour_palette[60], colour_palette[75], colour_palette[85], colour_palette[95])) +
-  labs(x = "Location Type",
-       y = "% of mass shootings",
-       fill = "Race") +
-  theme(
-    legend.position = "top",
-    legend.title = element_text(colour = "#666666", size = 16),
-    legend.text = element_text(colour = "#666666", size = 16),
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 16),
-    axis.title = element_text(colour = "#666666", size = 16),
-    axis.ticks = element_blank(),
-    panel.background = element_blank(),
-    axis.line.x = element_line(colour = "#666666"),
-    plot.margin=unit(c(1,0,1,0),"cm"))              
-
-# Display the bar chart 
-plot_loc_type_race
-
-```
-
-
-# Data Cleanse
 ## Gender
 
 The original breakdown of number of mass shootings by gender was:
@@ -1935,7 +1968,8 @@ colnames(unique_genders) <- c("Gender", "Shootings")
 kable(unique_genders)
 ```
   
-
+  
+  
 ## Race
 
 The original breakdown of number of mass shootings by race was:
@@ -1964,7 +1998,8 @@ colnames(unique_races) <- c("Race", "Shootings")
 # View the values for race, and the total shootings for each, in the cleansed data:
 kable(unique_races)
 ```  
-
+  
+  
 ## Weapons Obtained Legally
 
 The original breakdown of number of mass shootings by "Weapons Obtained Legally" was:
@@ -1994,7 +2029,8 @@ colnames(unique_legally) <- c("Weapons Obtained Legally", "Shootings")
 kable(unique_legally)
 ```
   
-
+  
+  
 ## State
 
 A new column was added containing the state code e.g. CA for California.
@@ -2027,7 +2063,8 @@ colnames(unique_state) <- c("State", "Shootings")
 kable(unique_state)
 
 ```  
-
+  
+  
 ## Location Type
 
 The location types were:
@@ -2062,7 +2099,8 @@ colnames(unique_loc_type) <- c("Location Type", "Shootings")
 # Display the new unique list of states
 kable(unique_loc_type)
 ```  
-
+  
+  
 ## Prior Signs Of Mental Health Issues
 
 The values in the imported data were:
