@@ -71,9 +71,17 @@ ggplot, gganimate, usmap, treemapify and waffle were used to create the data vis
 
 # Useful Links
 
-- [R For Data Science Community](https://www.rfordatasci.com/)
-- [Data Visualisation Society](https://www.datavisualizationsociety.com/)
+- [Rmarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+- [Table of Contents In Rmarkdown](https://bookdown.org/yihui/rmarkdown/html-document.html)
+- [Formatting Ggplot2 Legends](http://www.sthda.com/english/wiki/ggplot2-legend-easy-steps-to-change-the-position-and-the-appearance-of-a-graph-legend-in-r-software)
 - [Top 50 Ggplot2 Visualisations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code)
 - [Data Viz Catalogue](https://datavizcatalogue.com/)
 - [Intro To Viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 - [Viridis Colour Scales](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
+- [R For Data Science Community](https://www.rfordatasci.com/)
+- [Data Visualisation Society](https://www.datavisualizationsociety.com/)
+
+
+
+
+
