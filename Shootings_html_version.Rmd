@@ -444,7 +444,7 @@ lollipop_race <- ggplot(shootings_per_race, aes(y=shootings, x=reorder(race, -sh
   geom_text(aes(label=shootings),hjust=0.5, vjust=0.5, color = "#FFFFFF", size = 9) +
   theme(
     axis.text.y = element_blank(),
-    axis.text.x = element_text(colour = "#666666", size = 22),
+    axis.text.x = element_text(colour = "#666666", size = 14),
     axis.ticks = element_blank(),
     axis.title.y = element_text(colour = "#666666", size = 18),
     axis.title.x = element_blank(),
