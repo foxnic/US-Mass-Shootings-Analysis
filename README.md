@@ -75,3 +75,5 @@ ggplot, gganimate, usmap, treemapify and waffle were used to create the data vis
 - [Data Visualisation Society](https://www.datavisualizationsociety.com/)
 - [Top 50 Ggplot2 Visualisations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code)
 - [Data Viz Catalogue](https://datavizcatalogue.com/)
+- [Intro To Viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
+- [Viridis Colour Scales](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
