@@ -569,7 +569,7 @@ treemap_legally_shootings <- ggplot(shootings_per_legally, aes(area = shootings,
     legend.position = "top",
     legend.title = element_text(colour = "#666666", size = 16),
     legend.text = element_text(colour = "#666666", size = 16))+
-  geom_treemap(aes(alpha = shootings), fill = colour_palette[75]) +
+  geom_treemap(aes(alpha = shootings), fill = colour_palette[30]) +
   geom_treemap_text(colour = "white", place = "centre",
                     grow = TRUE)
 
@@ -600,8 +600,8 @@ lollipop_loc_type <- ggplot(shootings_per_loc_type, aes(y = shootings, x=locatio
                 color = "#e0e1e2", 
                 size = 2) +
   geom_point( size=15, 
-              color=colour_palette[60], 
-              fill=colour_palette[60], 
+              color="#e1ad46", 
+              fill="#e1ad46", 
               shape=21
               ) +
   labs(y = "Number of mass shootings") +
@@ -1521,7 +1521,7 @@ colnames(shootings_per_legally_prior) <- c("Weapons_Obtained_Legally", "Prior_Si
 # Create a bar chart using ggplot2 to show shootings by whether there were prior signs of mental health issues and whether weapons were obtained legally
  plot_legally_prior <- ggplot() + 
   geom_bar(aes(y=Num_Shootings, x=Weapons_Obtained_Legally, fill=Prior_Signs_Of_Mental_Health_Issues), data = shootings_per_legally_prior, stat = "identity", position = "fill") +
-  scale_fill_manual(values = c(colour_palette[60], colour_palette[75], colour_palette[90])) +
+  scale_fill_manual(values = c(colour_palette[30], colour_palette[40], colour_palette[50])) +
   labs(x = "Weapons Obtained Legally?",
        y = "% of mass shootings",
        fill = "Prior Signs of Mental Health Issues") +
