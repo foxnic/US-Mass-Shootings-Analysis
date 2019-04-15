@@ -2,7 +2,7 @@ body
 {
   color: #302f2f;
   font-family: 'Verdana', sans-serif;
-  font-size: 22px;
+  font-size: 18px;
   text-align: left;
   line-height: 1.5em;
   letter-spacing: 0.05em;
@@ -10,16 +10,19 @@ body
 
 h1 {
     color: #302f2f;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: bold;
     text-align: left;
+    margin-top: 50px; /* Add some white space above h1 headings */
 }
 
 h2 {
     color: #302f2f;
-    font-size: 34px;
+    font-size: 30px;
     text-align: left;
-    background-color: #e0e1e2;
+    background-color: #e0e1e2; /* Make the h2 headings a light grey bar */
+    margin-top: 50px; /* Add some white space above h2 headings */
+    margin-bottom: 25px; /* Add some white space below h2 headings */
 }
 
 h3 {

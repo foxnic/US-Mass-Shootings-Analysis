@@ -178,7 +178,6 @@ This analysis is based on data on US mass shootings 1982 - 2019 provided by Moth
 The download is available on [motherjones.com](https://www.motherjones.com/politics/2012/12/mass-shootings-mother-jones-full-data/)  
 
   
-  
 # Key Findings 
 
 ## Victims By State
@@ -243,11 +242,11 @@ treemap_state_shootings <- ggplot(shootings_per_state, aes(area = shootings, lab
 treemap_state_shootings
 
 ```
-**35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.
+**California** has had the most mass shootings (**19**). 
 
-**California** has had the most mass shootings (**19**).  
-  
-  
+**35** of the 50 states (**70%**) had at least one mass shooting between 1982 and 2019.  
+    
+    
 ## Shootings By Gender
 
 ```{r create_gender_summary, include=FALSE}
@@ -448,9 +447,10 @@ lollipop_race
 
 ```
 
-**56%** of mass shooters were **white**.
+**More than half** (56%) of mass shooters were **white**.
   
-  
+    
+    
 ## Prior Signs of Mental Health Issues
 
 ```{r create_prior_summary, include=FALSE}
@@ -479,9 +479,13 @@ treemap_prior_shootings
 
 ```
 
-**53%** of mass shooters had **prior signs** of mental health issues.
-  
-  
+**More than half** (53%) of mass shooters had **prior signs** of mental health issues.
+
+Arkansas is the only state to have mass shootings in which the shooter did **not** have any prior signs of mental health issues, but Arizona has only had **1** mass shooting and the shooter was only **11 years old**. 
+    
+      
+        
+        
 ## State & Prior Signs of Mental Health Issues
 
 ```{r create_state_prior_summary, include=FALSE}
@@ -540,10 +544,11 @@ heatmap_state_prior <- ggplot(shootings_per_state_prior, aes(Prior_Signs_Of_Ment
 heatmap_state_prior
 ```
 
-Most of the mass shooters had prior signs of mental health issues in most of the states.   
+In most of the 35 states, **most** of the mass shooters had **prior signs** of mental health issues.   
 
 Only 2 of the states (**5%**) have had more mass shootings with **no prior signs** of mental health issues.  
-
+  
+  
 ## Were Weapons Obtained Legally?
 
 ```{r create_legally_summary, include=FALSE}
@@ -618,8 +623,11 @@ lollipop_loc_type
  
 
 A **third** of US mass shootings occurred in a **workplace**.
+
+**15%** occurred in a **school**.
   
-  
+    
+    
 ## Location Type & Race
 
 ```{r create_loc_type_race_summary, include=FALSE}
@@ -656,8 +664,11 @@ plot_loc_type_race
 
 ```
 
-  
-  
+**All** 6 of the mass shootings in a **religious** place involved a shooter who was **white**
+
+**Over half** of mass shootings in a **school** involved a shooter who was **white**.
+    
+    
 ## Age Of Shooter
 
 ```{r create_age_summary, include=FALSE}
@@ -785,10 +796,11 @@ faceted_line_graph_year_age
   
 ```
 
-There is a noticeable increase in recent years in the number of mass shooters in their twenties.
+There is a noticeable **increase** in recent years in the number of mass shooters in their **twenties**.
 
 Note: The age bracket "1-12" has been excluded from the charts because there was only one instance in that category and so there is little use trying to illustrate the pattern over time for that age bracket.  
-
+  
+  
 ## Semi-Automatic Weapons
 
 ```{r create_semi_auto_used_column, include=FALSE}
@@ -876,12 +888,13 @@ plot_state_semi
 
 Of the 35 states that have had a mass shooting, 30 (**85%**) have had shootings involving semi-automatic weapons.  
 
-Only 5 states have not had any mass shootings with semi-automatic weapons.
+For 14 states (**40%** of the states that have had mass shootings), for example Connecticut, **all** their mass shootings have involved semi-automatic weapons. 
 
 In the 3 states with the most mass shootings - California, Florida and Texas - more shootings have involved semi-automatic weapons than without.
 
-For 14 states (**40%** of the states that have had mass shootings), for example Connecticut, **all** their mass shootings have involved semi-automatic weapons.  
-
+Only 5 states have not had any mass shootings with semi-automatic weapons.
+  
+  
 ## Decade & Semi-Automatic Weapons
 
 ```{r create_decade_semi_summary, include=FALSE}
@@ -923,9 +936,10 @@ bubble_decade_semi
 
 ```
 
-In every decade, more mass shootings have involved semi-automatic weapons than without.
+In **every decade**, more mass shootings have involved semi-automatic weapons than without.
   
-  
+    
+    
 ## Multiple Weapons
 
 ```{r create_multiple_weapons_used_column, include=FALSE}
@@ -973,7 +987,6 @@ multiple_weapons_waffle
 
 Just **over half** (53%) of mass shootings involved **multiple weapons**.
   
-    
     
 # Other Visualisations  
 
