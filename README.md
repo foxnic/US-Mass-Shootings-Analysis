@@ -31,7 +31,7 @@ Results published to HTML using RMarkdown.
 
 HTML styled using CSS.
 
-HTML file is hosted on rpubs.com
+HTML file is hosted on [rpubs](http://rpubs.com/)
 
 # R Packages Used
 
