@@ -70,8 +70,19 @@ cleansed_data$race = case_when(
    cleansed_data$race == "White " ~ "White"
 )
 
+# For rows where race is "Asian" the approach in the code above is not recognising race as "Asian" for some reason and so its saving race as "Unknown".  So I'm setting the race for those based on the case description.
+cleansed_data[cleansed_data$case == "Yountville veterans home shooting", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "San Francisco UPS shooting", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "Oikos University killings", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "Su Jung Health Sauna shooting", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "Binghamton shootings", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "Virginia Tech massacre", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "Xerox killings", "race"] <- "Asian"
+cleansed_data[cleansed_data$case == "University of Iowa shooting", "race"] <- "Asian"
+
 # For rows where race is NA, set it to Unknown
 cleansed_data[is.na(cleansed_data$race), "race"] <- "Unknown"
+
 
 
 # Update the "Weapons Obtained Legally" column so that there is only one version of "Yes" etc
@@ -196,7 +207,7 @@ colnames(victims_by_state) <- c("state", "victims")
 
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE, label_color = "white") +
-  scale_fill_continuous(low = colour_palette[55], high = colour_palette[20], na.value = "white", name = "victims") +
+  scale_fill_continuous(low = colour_palette[50], high = colour_palette[20], na.value = "white", name = "victims") +
   theme(
     legend.position = "top", 
     legend.title = element_text(colour = "#666666", size = 16, vjust = 0.75),
@@ -1742,7 +1753,7 @@ colnames(shootings_per_age_race) <- c("Age_Bracket", "Race", "Num_Shootings")
 # Create a bar chart using ggplot2 to show shootings by age bracket and race
  plot_age_race <- ggplot() + 
   geom_bar(aes(y=Num_Shootings, x=Age_Bracket, fill=Race), data = shootings_per_age_race, stat = "identity", position = "fill") +
-  scale_fill_manual(values = c(c(colour_palette[20], colour_palette[40], colour_palette[60], colour_palette[75], colour_palette[90]))) +
+  scale_fill_manual(values = c(c(colour_palette[20], colour_palette[30], colour_palette[45], colour_palette[60], colour_palette[75], colour_palette[90]))) +
   labs(x = "Age Bracket",
        y = "% of mass shootings",
        fill = "Race") +
