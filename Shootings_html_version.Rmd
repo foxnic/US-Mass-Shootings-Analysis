@@ -25,7 +25,6 @@ library(sf)
 library(usmap)
 library(waffle)
 library(treemapify)
-library(ggrepel)
 library(gganimate)
 library(tweenr)
 library(gifski)
@@ -193,7 +192,7 @@ colnames(victims_by_state) <- c("state", "victims")
 ```
 
 
-```{r display_plot_state_victims, echo=FALSE, fig.width=8, fig.height=7}
+```{r display_plot_state_victims, echo=FALSE, fig.width=9, fig.height=7}
 
 # Create a chart showing the states on a map of the US and shade the states by the number of victims
 plot_state_map_victims <- plot_usmap(data = victims_by_state, values = "victims", regions = "states", labels = TRUE, label_color = "white") +
