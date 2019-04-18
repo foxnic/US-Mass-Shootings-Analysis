@@ -16,20 +16,22 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r import_data, include=FALSE}
-library(tidyverse)
-library(operators)
-library(magrittr)
-library(dplyr)
-library(knitr)
-library(sf)
-library(usmap)
-library(waffle)
-library(treemapify)
-library(gganimate)
-library(tweenr)
-library(gifski)
-library(png)
-library(viridis)
+# MG: Updated package list as things like dplyr loaded with tidyverse
+# not sure you explictly need magrittr as common pipe functions are included as part of dplyr etc. 
+# also you might not need knitr?
+# MG: Also took the liberty of using a package helper function which will load any missing packages and check that all packages are loaded before proceeding.
+
+source("Package_Helper.R")
+
+packages <- list("tidyverse", "operators", "knitr", "sf", "usmap", "waffle", "treemapify", "gganimate", "tweenr", "gifski", "png", "viridis")
+
+package_loader(packages)
+
+# Tidy-up!
+rm(packages, package_loader)
+```
+```{r}
+# MG: Split out the data load from package load - saves having to reload all the packages if you debug a faulty load...
 
 # Import the shootings data from the CSV file and save it as a data frame called imported_data
 imported_data <- read.csv("ShootingsData.csv", strip.white = TRUE)
@@ -39,51 +41,64 @@ cleansed_data <- imported_data
 
 # Create the colour palette for the data visualisations using the magma colour palette from the viridis package
 colour_palette <- magma(101)
+
 ```
 
 ```{r cleanse_data, include=FALSE}
 
 # Create new column containing 1 for each row, to use when showing number of shootings per grouping
-cleansed_data$for_count <- 1
-
+cleansed_data <- cleansed_data %>%
+  mutate(for_count = 1)
 # Update the gender column so that there is only one version of "Female" etc
-cleansed_data$gender = case_when(
-   cleansed_data$gender == "M" ~ "Male",
-   cleansed_data$gender == "Male" ~ "Male",
-   cleansed_data$gender == "F" ~ "Female",
-   cleansed_data$gender == "Female" ~ "Female",
-   cleansed_data$gender == "Male & Female" ~ "Male & Female"
-)
+
+# MG using factor labels to deal with the different naming...
+
+
+cleansed_data <- cleansed_data %>%
+  mutate (gender = factor(gender, levels = c("M", 
+                                             "Male", 
+                                             "F", 
+                                             "Female", 
+                                             "Male & Female"),
+                                  labels = c("Male", 
+                                             "Male", 
+                                             "Female", 
+                                             "Female", 
+                                             "Male & Female")))
+
+#MG: sanity check - check all levels accounted for - should be 0
+sum(is.na(cleansed_data$gender))
+
 
 # Update the race column so that there is only one version of Unknown, Black, White etc
-cleansed_data$race = case_when(
-   cleansed_data$race == "Other" ~ "Unknown",
-   cleansed_data$race == "-" ~ "Unknown",
-   cleansed_data$race == "unclear" ~ "Unknown",
-   cleansed_data$race == "" ~ "Unknown",
-   cleansed_data$race == "black" ~ "Black",
-   cleansed_data$race == "Black" ~ "Black",
-   cleansed_data$race == "Latino" ~ "Latino",
-   cleansed_data$race == "Native American" ~ "Native American",
-   cleansed_data$race == "white" ~ "White",
-   cleansed_data$race == "White" ~ "White",
-   cleansed_data$race == "White " ~ "White"
-)
 
-# For rows where race is "Asian" the approach in the code above is not recognising race as "Asian" for some reason and so its saving race as "Unknown".  So I'm setting the race for those based on the case description.
-cleansed_data[cleansed_data$case == "Yountville veterans home shooting", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "San Francisco UPS shooting", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "Oikos University killings", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "Su Jung Health Sauna shooting", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "Binghamton shootings", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "Virginia Tech massacre", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "Xerox killings", "race"] <- "Asian"
-cleansed_data[cleansed_data$case == "University of Iowa shooting", "race"] <- "Asian"
+# MG: dare say there's some clever stuff to be had with regex or %in% here if using cases...
+cleansed_data <- cleansed_data %>%
+  mutate(race =tolower(race)) %>% # MG: added tolower to reduce the number of cases 
+  mutate(race = factor(race, levels = c("other", 
+                                        "-", 
+                                        "unclear", 
+                                        "", "black", 
+                                        "latino", 
+                                        "native american", 
+                                        "white", 
+                                        "asian"),
+                              labels = c("Unknown", 
+                                         "Unknown", 
+                                         "Unknown", 
+                                         "Unknown", 
+                                         "Black", 
+                                         "Latino", 
+                                         "Native American", 
+                                         "White", 
+                                         "Asian")))
 
-# For rows where race is NA, set it to Unknown
-cleansed_data[is.na(cleansed_data$race), "race"] <- "Unknown"
+#MG: sanity check - check all levels accounted for - should be 0
+sum(is.na(cleansed_data$race))
+# MG might also want to consider calling table to see the results for sainity checking...
 
 
+#MG removed the handling code for Asian / residual NA as handled in the above factor code...
 
 # Update the "Weapons Obtained Legally" column so that there is only one version of "Yes" etc
 cleansed_data$weapons_obtained_legally = case_when(
@@ -102,10 +117,14 @@ cleansed_data$weapons_obtained_legally = case_when(
 cleansed_data[cleansed_data$case == "Chattanooga military recruitment center", "weapons_obtained_legally"] <- "Yes"
 
 # Create a new column containing the text after the comma in the location column
-cleansed_data$state <- sub('.*\\,', '', cleansed_data$location)
+# MG used a safer method (using imported data) to split and take the state and trim whitespace
 
-# Strip leading white spaces from state
-cleansed_data$state <- sub("^\\s+", "", cleansed_data$state)
+#MG tidyverse way to split out the state. In this case ok to take from cleansed as leaving orginal column untouched...
+
+cleansed_data <-cleansed_data %>%
+  separate(location, c(NA, "state"), remove = FALSE, sep = ",") %>%
+  mutate(state = str_squish(state)) 
+
 
 # Replace state names with their codes e.g. California becomes CA
 cleansed_data$state <- ifelse(cleansed_data$state == "California", "CA", cleansed_data$state)
@@ -195,10 +214,12 @@ The download is available on [motherjones.com](https://www.motherjones.com/polit
 ```{r create_state_victims_summary, include=FALSE}
 
 # Create a new data frame that shows number of victims by state
-victims_by_state <- aggregate(cleansed_data$total_victims, by=list(cleansed_data$state), FUN = sum)
 
-# Change the column heading names to "state" and "victims"
-colnames(victims_by_state) <- c("state", "victims")
+# tidyverse way to aggregate & tally victims..
+victims_by_state <- cleansed_data %>%
+  group_by(state) %>%
+  tally(total_victims, name = "victims")
+
 
 ```
 
