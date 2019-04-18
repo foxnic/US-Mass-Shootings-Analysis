@@ -1,7 +1,9 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
-date: 15/04/2019
-author: Nic Fox
+date: 18/04/2019
+author: 
+  - Nic Fox
+  - Mark Goble (minor additions)
 output: 
   html_document:
     toc: true # table of content true
