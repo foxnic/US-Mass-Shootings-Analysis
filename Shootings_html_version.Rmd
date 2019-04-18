@@ -23,13 +23,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 source("Package_Helper.R")
 
-packages <- list("tidyverse", "operators", "knitr", "sf", "usmap", "waffle", "treemapify", "gganimate", "tweenr", "gifski", "png", "viridis")
+packages <- list("tidyverse", "operators", "knitr", "sf", "usmap", "waffle", "treemapify", "gganimate", "tweenr", "gifski", "png", "viridis", "rlang", "lubridate")
 
 package_loader(packages)
 
 # Tidy-up!
 rm(packages, package_loader)
 ```
+
 ```{r}
 # MG: Split out the data load from package load - saves having to reload all the packages if you debug a faulty load...
 
@@ -44,6 +45,21 @@ colour_palette <- magma(101)
 
 ```
 
+```{r}
+refactorer <- function(df, col_name, level_vec, label_vec, other){
+  level_vec <- tolower(level_vec)
+  column_sym <- rlang::sym(col_name)
+  # note the special syntax i.e. !!column_sum := ...
+  # https://www.tidyverse.org/articles/2018/03/rlang-0.2.0/
+  df %>% 
+    mutate(!!column_sym := trimws(!!column_sym)) %>% #get rid of whitespace...
+    mutate(!!column_sym := tolower(!!column_sym)) %>% # change to lower case for better comparisons..
+    mutate(!!column_sym := factor(!!column_sym, levels = level_vec, labels = label_vec)) %>%
+    mutate(!!column_sym := fct_explicit_na(!!column_sym, na_level =  other)) # use forcats to deal with unset levels...
+}
+```
+
+
 ```{r cleanse_data, include=FALSE}
 
 # Create new column containing 1 for each row, to use when showing number of shootings per grouping
@@ -52,69 +68,54 @@ cleansed_data <- cleansed_data %>%
 # Update the gender column so that there is only one version of "Female" etc
 
 # MG using factor labels to deal with the different naming...
+# MG also extracting the process of sorting out the factors into a function
 
+# MG note don't need two levels for M and m for example as taken care of in function.
+lvls_gender <- c("M", "Male", "F", "Female", "Male & Female")
+lbls_gender <- c("Male", "Male", "Female", "Female", "Male & Female")
 
-cleansed_data <- cleansed_data %>%
-  mutate (gender = factor(gender, levels = c("M", 
-                                             "Male", 
-                                             "F", 
-                                             "Female", 
-                                             "Male & Female"),
-                                  labels = c("Male", 
-                                             "Male", 
-                                             "Female", 
-                                             "Female", 
-                                             "Male & Female")))
+cleansed_data <- refactorer(cleansed_data, "gender", lvls_gender, lbls_gender, "Unknown")
+
+rm(lvls_gender, lbls_gender)
 
 #MG: sanity check - check all levels accounted for - should be 0
-sum(is.na(cleansed_data$gender))
-
+# NOT RUN
+# sum(is.na(cleansed_data$gender)
 
 # Update the race column so that there is only one version of Unknown, Black, White etc
 
-# MG: dare say there's some clever stuff to be had with regex or %in% here if using cases...
-cleansed_data <- cleansed_data %>%
-  mutate(race =tolower(race)) %>% # MG: added tolower to reduce the number of cases 
-  mutate(race = factor(race, levels = c("other", 
-                                        "-", 
-                                        "unclear", 
-                                        "", "black", 
-                                        "latino", 
-                                        "native american", 
-                                        "white", 
-                                        "asian"),
-                              labels = c("Unknown", 
-                                         "Unknown", 
-                                         "Unknown", 
-                                         "Unknown", 
-                                         "Black", 
-                                         "Latino", 
-                                         "Native American", 
-                                         "White", 
-                                         "Asian")))
+lvls_race <- c("Black", "Latino", "Native American", "White", "Asian")
+lbls_race <- c("Black", "Latino", "Native American", "White", "Asian")
+
+cleansed_data <- refactorer(cleansed_data, "race", lvls_race, lbls_race,  "Unknown")
+
+rm(lvls_race, lbls_race)
 
 #MG: sanity check - check all levels accounted for - should be 0
-sum(is.na(cleansed_data$race))
+# NOT RUN
+# sum(is.na(cleansed_data$race))
 # MG might also want to consider calling table to see the results for sainity checking...
-
-
 #MG removed the handling code for Asian / residual NA as handled in the above factor code...
 
 # Update the "Weapons Obtained Legally" column so that there is only one version of "Yes" etc
-cleansed_data$weapons_obtained_legally = case_when(
-   cleansed_data$weapons_obtained_legally == "No" ~ "No",
-   cleansed_data$weapons_obtained_legally == "TBD" ~ "Unknown",
-   cleansed_data$weapons_obtained_legally == "-" ~ "Unknown",
-   cleansed_data$weapons_obtained_legally == "Unknown" ~ "Unknown",
-   cleansed_data$weapons_obtained_legally == "Kelley passed federal criminal background checks; the US Air Force failed to provide information on his criminal history to the FBI" ~ "Unknown",
-   cleansed_data$weapons_obtained_legally == "Yes" ~ "Yes",
-   cleansed_data$weapons_obtained_legally == "\nYes" ~ "Yes",
-   cleansed_data$weapons_obtained_legally == "Yes " ~ "Yes",
-   cleansed_data$weapons_obtained_legally %!in% c("Yes", "\nYes", "No", "Unknown", "-", "TBD") ~ "Unknown"
-)
 
 # Set weapons_obtained_legally to "Yes" for the Chattanooga military recruitment center shooting. The value in the imported data set contains quotes and I haven't figured out how to get the match condition to work with that value yet so this is a temporary workaround.
-cleansed_data[cleansed_data$case == "Chattanooga military recruitment center", "weapons_obtained_legally"] <- "Yes"
+
+#MG moved to before the other processing so it's clean before going into the function also converted to tidyverse...
+
+cleansed_data <- cleansed_data %>%
+  mutate(weapons_obtained_legally = 
+           ifelse(case == "Chattanooga military recruitment center",
+                  "Yes",
+                  weapons_obtained_legally))
+
+
+lvls_weapons <- c("No","Yes")
+lbls_weapons <- c("No","Yes")
+
+cleansed_data <- refactorer(cleansed_data, "weapons_obtained_legally", lvls_weapons, lbls_weapons, "Unknown")
+
+rm(lvls_weapons, lbls_weapons)
 
 # Create a new column containing the text after the comma in the location column
 # MG used a safer method (using imported data) to split and take the state and trim whitespace
@@ -123,79 +124,42 @@ cleansed_data[cleansed_data$case == "Chattanooga military recruitment center", "
 
 cleansed_data <-cleansed_data %>%
   separate(location, c(NA, "state"), remove = FALSE, sep = ",") %>%
-  mutate(state = str_squish(state)) 
+  mutate(state = str_squish(state)) # squish is like trimws but takes out multiple whitespace between words
+
+# MG deal wiith washington D.C. and mis-spelt Louisiana..
+
+cleansed_data <- cleansed_data %>%
+  mutate(state = ifelse(state == "D.C.","WA", state)) %>%
+  mutate(state = ifelse(state == "Lousiana","Louisiana", state)) 
 
 
-# Replace state names with their codes e.g. California becomes CA
-cleansed_data$state <- ifelse(cleansed_data$state == "California", "CA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Pennsylvania", "PA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Florida", "FL", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Ohio", "OH", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Washington", "WA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Lousiana", "LA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Texas", "TX", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Kansas", "KS", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Michigan", "MI", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Colorado", "CO", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Oregon", "OR", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Tennessee", "TN", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "South Carolina", "SC", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Wisconsin", "WI", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "New York", "NY", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Connecticut", "CT", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Minnesota", "MN", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Georgia", "GA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Nevada", "NV", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Arizona", "AZ", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "North Carolina", "NC", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Kentucky", "KY", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Illinois", "IL", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Missouri", "MO", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Nebraska", "NE", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Virginia", "VA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Utah", "UT", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Mississippi", "MS", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Massachusetts", "MA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Hawaii", "HI", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Arkansas", "AR", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Iowa", "IA", cleansed_data$state)
-cleansed_data$state <- ifelse(cleansed_data$state == "Oklahoma", "OK", cleansed_data$state)
+# MG: there are precanned lists of states in the US Maps - create a levels of both full name and abbreviations
+lvls_state <- c(state.name, state.abb)
+lbls_state <- c(state.abb, state.abb)
 
-# Strip leading white spaces from location.1 so that there's only one instance of "Workplace"
-cleansed_data$location.1 <- sub("^\\s+", "", cleansed_data$location.1)
+cleansed_data <- refactorer(cleansed_data, "state", lvls_state, lbls_state, "Unknown")
 
-# Strip trailing white spaces from location.1 so that there's only one instance of "Other"
-cleansed_data$location.1 <- sub("\\s+$", "", cleansed_data$location.1)
+rm(lvls_state, lbls_state)
+
+# Strip leading white spaces from location.1 so that there's only one instance of "Workplace". # Strip trailing white spaces from location.1 so that there's only one instance of "Other"
+# MG can do both cases with trimws <- didn't bother changing to tidyverse
+
+cleansed_data$location.1 <- trimws(cleansed_data$location.1)
 
 # Change "-", "TBD" and "Unclear" to "Unknown"
-cleansed_data$prior_signs_mental_health_issues = case_when(
-   cleansed_data$prior_signs_mental_health_issues == "-" ~ "Unknown",
-   cleansed_data$prior_signs_mental_health_issues == "No" ~ "No",
-   cleansed_data$prior_signs_mental_health_issues == "TBD" ~ "Unknown",
-   cleansed_data$prior_signs_mental_health_issues == "Unclear" ~ "Unknown",
-   cleansed_data$prior_signs_mental_health_issues == "Unknown" ~ "Unknown",
-   cleansed_data$prior_signs_mental_health_issues == "Yes" ~ "Yes"
-)
-# Copy date to a new column called international_date as a character variable (rather than a factor)
-cleansed_data$international_date <- as.character.Date(cleansed_data$date) # copy the dates to the new column
+# MG same trick as above
 
-# Trim leading and trailing white spaces
-cleansed_data$international_date <- trimws(cleansed_data$international_date)
+lvls_health <- c("No", "Yes")
+lbls_health <- c("No", "Yes")
 
-# change /17 at the end of the string to /2017
-cleansed_data$international_date <- str_replace(cleansed_data$international_date, "^(.*/)[1]{1}[7]{1}$", "\\12017") 
+cleansed_data <- refactorer(cleansed_data, "prior_signs_mental_health_issues", lvls_health, lbls_health, "Unknown")
 
-# change /18 at the end of the string to /2018
-cleansed_data$international_date <- str_replace(cleansed_data$international_date, "^(.*/)[1]{1}[8]{1}$", "\\12018") 
+rm(lvls_health, lbls_health)
 
-# change /19 at the end of the string to /2019
-cleansed_data$international_date <- str_replace(cleansed_data$international_date, "^(.*/)[1]{1}[9]{1}$", "\\12019") 
+# MG lubridate will radically reduce the processing needed to standardise the date
+cleansed_data$international_date <- lubridate::mdy(cleansed_data$date)
 
-# Change the date from US format (month-day-year) to international date format (year-month-day)
-cleansed_data$international_date <- format(as.Date(cleansed_data$international_date, format = "%m/%d/%Y"), "%Y-%m-%d")
-
-# Change international_date to date format
-cleansed_data$international_date <- as.Date(cleansed_data$international_date)
+#
 ```
 
 # Data
@@ -220,6 +184,7 @@ victims_by_state <- cleansed_data %>%
   group_by(state) %>%
   tally(total_victims, name = "victims")
 
+#MG - refactoring ends here!!!!!!
 
 ```
 
