@@ -1,6 +1,6 @@
 ---
 title: "US Mass Shootings 1982 to 2019"
-date: 18/04/2019
+date: 06/06/2019
 author: 
   - Nic Fox
   - Mark Goble (minor additions)
@@ -13,6 +13,8 @@ output:
 css: "Shootings.css"
 ---
 
+Updated to use "marks little helper" package including refactorer function
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -23,15 +25,53 @@ knitr::opts_chunk$set(echo = TRUE)
 # also you might not need knitr?
 # MG: Also took the liberty of using a package helper function which will load any missing packages and check that all packages are loaded before proceeding.
 
-source("Package_Helper.R")
+# this version requires pacman to load / install packages
 
-packages <- list("tidyverse", "operators", "knitr", "sf", "usmap", "waffle", "treemapify", "gganimate", "tweenr", "gifski", "png", "viridis", "rlang", "lubridate")
+pacman::p_load(tidyverse, operators, knitr, sf, usmap, waffle, treemapify, gganimate, 
+       tweenr, gifski, png, viridis, rlang, lubridate)
 
-package_loader(packages)
 
-# Tidy-up!
-rm(packages, package_loader)
+
 ```
+
+```{r}
+refactorer <- function(data_frame,
+                       column,
+                       level_vector,
+                       label_vector,
+                       other_label = "Unknown"){
+
+  checkmate::assert_data_frame(data_frame)
+  checkmate::assert_string(column)
+  checkmate::assert_vector(level_vector)
+  # check the two vectors are of the same length
+  level_vector_len <- length(level_vector)
+  checkmate::assert_vector(label_vector, len = level_vector_len)
+  checkmate::assert_string(other_label)
+
+  if(!column %in% colnames(data_frame)){
+    stop(paste(column, "is not not a column in the data frame"))
+  }
+
+
+  level_vector <- tolower(level_vector)
+  column_sym <- rlang::sym(column)
+  # note the special syntax i.e. !!column_sum := ...
+  # https://www.tidyverse.org/articles/2018/03/rlang-0.2.0/
+  data_frame %>%
+    dplyr::mutate(!!column_sym := trimws(!!column_sym)) %>% #get rid of whitespace...
+    dplyr::mutate(!!column_sym := tolower(!!column_sym)) %>% # change to lower case for better comparisons..
+    dplyr::mutate(!!column_sym := factor(!!column_sym,
+                                  levels = level_vector,
+                                  labels = label_vector)) %>%
+    dplyr::mutate(!!column_sym := forcats::fct_explicit_na(!!column_sym,
+                                           na_level =  other_label)) # use forcats to deal with unset levels...
+
+}
+
+```
+
+
 
 ```{r}
 # MG: Split out the data load from package load - saves having to reload all the packages if you debug a faulty load...
@@ -45,20 +85,6 @@ cleansed_data <- imported_data
 # Create the colour palette for the data visualisations using the magma colour palette from the viridis package
 colour_palette <- magma(101)
 
-```
-
-```{r}
-refactorer <- function(df, col_name, level_vec, label_vec, other){
-  level_vec <- tolower(level_vec)
-  column_sym <- rlang::sym(col_name)
-  # note the special syntax i.e. !!column_sum := ...
-  # https://www.tidyverse.org/articles/2018/03/rlang-0.2.0/
-  df %>% 
-    mutate(!!column_sym := trimws(!!column_sym)) %>% #get rid of whitespace...
-    mutate(!!column_sym := tolower(!!column_sym)) %>% # change to lower case for better comparisons..
-    mutate(!!column_sym := factor(!!column_sym, levels = level_vec, labels = label_vec)) %>%
-    mutate(!!column_sym := fct_explicit_na(!!column_sym, na_level =  other)) # use forcats to deal with unset levels...
-}
 ```
 
 
